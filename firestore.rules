@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // =========================================================================
+    // Infoyashonand Technology Pvt. Ltd. (ITPL) - Firestore Security Rules
+    // =========================================================================
+
+    // 1. Applications (Job applications, internship applications, assessment progress)
+    match /itpl_applications/{appId} {
+      allow read, write: if true;
+    }
+
+    // 2. Candidate Accounts & Profiles
+    match /itpl_candidates/{candidateId} {
+      allow read, write: if true;
+    }
+
+    // 3. Aptitude Test Results
+    match /itpl_test_results/{testId} {
+      allow read, write: if true;
+    }
+
+    // 4. Candidate Uploaded KYC Documents
+    match /itpl_documents/{docId} {
+      allow read, write: if true;
+    }
+
+    // 5. Offer Letters
+    match /itpl_offers/{offerId} {
+      allow read, write: if true;
+    }
+
+    // 6. Internship Certificates
+    match /itpl_internships/{internId} {
+      allow read, write: if true;
+    }
+
+    // 7. Official Verifiable Certificates (Experience, Award, Recommendation)
+    match /itpl_certificates/{certId} {
+      allow read, write: if true;
+    }
+
+    // 8. Employee Roster
+    match /itpl_employees/{empId} {
+      allow read, write: if true;
+    }
+
+    // 9. Public "Our Team" Member Directory
+    match /itpl_our_team/{memberId} {
+      allow read, write: if true;
+    }
+
+    // 10. Website Inquiries & Contact Leads
+    match /itpl_inquiries/{inquiryId} {
+      allow read, write: if true;
+    }
+
+    // 11. Attendance Records
+    match /itpl_attendance/{attId} {
+      allow read, write: if true;
+    }
+
+    // Global collection fallback
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

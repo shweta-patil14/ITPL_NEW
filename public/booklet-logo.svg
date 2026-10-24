@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient: Deep Royal Navy & Indigo -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E2374"/>
+      <stop offset="55%" stop-color="#2D35A8"/>
+      <stop offset="100%" stop-color="#141752"/>
+    </linearGradient>
+
+    <!-- Metallic Gold Rim -->
+    <linearGradient id="goldRim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+
+    <!-- Crimson PDF Emblem -->
+    <linearGradient id="pdfGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF3366"/>
+      <stop offset="100%" stop-color="#D90429"/>
+    </linearGradient>
+
+    <!-- White Page Gradient -->
+    <linearGradient id="pageLight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E2E8F0"/>
+      <stop offset="40%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F1F5F9"/>
+    </linearGradient>
+
+    <!-- Ribbon Gradient -->
+    <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+
+    <filter id="shadowFilter" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Circular Outer Badge -->
+  <circle cx="64" cy="64" r="60" fill="url(#bgGrad)" stroke="url(#goldRim)" stroke-width="3.5" filter="url(#shadowFilter)"/>
+
+  <!-- Inner Subtle Accent Ring -->
+  <circle cx="64" cy="64" r="54" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <!-- 3D Open Booklet Graphics -->
+  <g filter="url(#shadowFilter)" transform="translate(0, -2)">
+    <!-- Back Page Flaps -->
+    <path d="M 31 38 Q 64 43 97 38 L 97 78 Q 64 83 31 78 Z" fill="#94A3B8" opacity="0.45"/>
+    <path d="M 29 40 Q 64 45 99 40 L 99 80 Q 64 85 29 80 Z" fill="#CBD5E1"/>
+
+    <!-- Left Open Page -->
+    <path d="M 27 42 Q 45 44 64 47 L 64 87 Q 45 84 27 82 Z" fill="url(#pageLight)"/>
+
+    <!-- Right Open Page -->
+    <path d="M 64 47 Q 83 44 101 42 L 101 82 Q 83 84 64 87 Z" fill="#FFFFFF"/>
+
+    <!-- Center Fold Shade -->
+    <path d="M 62 46.5 Q 64 47 66 46.5 L 66 87.5 Q 64 87 62 87.5 Z" fill="#64748B" opacity="0.5"/>
+
+    <!-- Page Content Lines Left -->
+    <line x1="33" y1="52" x2="57" y2="54" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="33" y1="59" x2="57" y2="61" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="33" y1="66" x2="53" y2="68" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="33" y1="73" x2="49" y2="75" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round"/>
+
+    <!-- Page Content Lines Right -->
+    <line x1="71" y1="54" x2="95" y2="52" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="71" y1="61" x2="95" y2="59" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="75" y1="68" x2="95" y2="66" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="77" y1="75" x2="95" y2="73" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round"/>
+
+    <!-- Golden Bookmark Ribbon -->
+    <polygon points="60,45 68,45 68,76 64,71 60,76" fill="url(#ribbonGrad)"/>
+  </g>
+
+  <!-- High-Energy PDF Pill Badge -->
+  <g transform="translate(64, 69)" filter="url(#shadowFilter)">
+    <rect x="0" y="0" width="38" height="20" rx="5" fill="url(#pdfGrad)" stroke="#FFFFFF" stroke-width="1.8"/>
+    <text x="19" y="14.5" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="900" text-anchor="middle" letter-spacing="0.8">PDF</text>
+  </g>
+
+  <!-- Sparkle Accent Top Left -->
+  <path d="M 40 28 Q 44 28 44 24 Q 44 28 48 28 Q 44 28 44 32 Q 44 28 40 28 Z" fill="#FDE68A"/>
+</svg>

@@ -1,0 +1,112 @@
+[
+  {
+    "id": "com.spark.catalogue",
+    "name": "ND Sales",
+    "fallbackCategory": "Business / Field Sales",
+    "fetchedTitle": "ND Sales",
+    "desc": "ND Sales is the ultimate tool designed to empower your sales force and streamline your daily business operations. Whether you are a Salesman on the field, a Telecaller managing leads, or an ...",
+    "localImage": "/live_assets/apps/com.spark.catalogue.png",
+    "iconUrl": "https://play-lh.googleusercontent.com/eY66ZO0comnGK8zdaZ9k2wgQbCZLS0g4IbIGK5oiIBYhXYSpkREAY8IVbFCRHz42m9S-bveQIGYHfvCeicxZ=w240-h240",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.spark.catalogue"
+  },
+  {
+    "id": "com.spark.itistudent",
+    "name": "ITI Expert Students",
+    "fallbackCategory": "EdTech / Exam Prep",
+    "fetchedTitle": "ITI Expert Students",
+    "desc": "Welcome to ITI Expert Students – the ultimate all-in-one learning and exam preparation platform designed specifically for ITI students across all trades!Whether you are preparing for your an...",
+    "localImage": "/live_assets/apps/com.spark.itistudent.png",
+    "iconUrl": "https://play-lh.googleusercontent.com/h75qQ2rx7a5GRl4hN6DiILQiN_pKh9GtvurE3MFTe3tyLSVt6GjapYZhn7Odwo-E-Q50ON4Pc3YmTQ36rfilesE=w240-h240",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.spark.itistudent"
+  },
+  {
+    "id": "com.prathmesh.ondosolution",
+    "name": "ONDO Solutions",
+    "fallbackCategory": "E-Commerce & Electronics",
+    "fetchedTitle": "ONDO Solutions",
+    "desc": "ONDO Solutions is an eCommerce application designed to help users browse and purchase electronic products in a simple and organized way. The platform provides access to a variety of items su...",
+    "localImage": "/live_assets/apps/com.prathmesh.ondosolution.png",
+    "iconUrl": "https://play-lh.googleusercontent.com/HZNhIboZtqN6ANS2a8AbhlrWopJnxyzLlVAqXqfR9k8wK1sHrjrL8hZ5B7eXVozEfzykfAftDNIrIPIhqgKmzLQ=w240-h240",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.prathmesh.ondosolution"
+  },
+  {
+    "id": "com.spark.cashreyash_shah",
+    "name": "CA Shreyas Shah",
+    "fallbackCategory": "Finance & Tax Consultant",
+    "fetchedTitle": "CA Shreyas Shah",
+    "desc": "CA Shreyas is a professional app designed for Chartered Accountants and tax consultants to simplify daily client data management.It helps you securely save, organize, and access all client-r...",
+    "localImage": "/live_assets/apps/com.spark.cashreyash_shah.png",
+    "iconUrl": "https://play-lh.googleusercontent.com/OekCADbGme7GtLltDWYArcz-4wzpHJ6d6qkO745vg3Iu2sXlffHDzdftUojAoLgd2fWs3jsaTwG3gUk3y_HVAA=w240-h240",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.spark.cashreyash_shah"
+  },
+  {
+    "id": "com.icodedtech.customersupportsysterm",
+    "name": "IT Computer Services",
+    "fallbackCategory": "IT Support & Hardware",
+    "fetchedTitle": "IT Computer Services",
+    "desc": "Our app is designed to enhance customer satisfaction by providing reliable and seamless after-sales services to our valued customers. Once a product or service is purchased, the support does...",
+    "localImage": "/live_assets/apps/com.icodedtech.customersupportsysterm.png",
+    "iconUrl": "https://play-lh.googleusercontent.com/kvFa3_QEJpEcetbhVGZhL7iFUE43u0tVwGtvQw14FbqKMLNkb0wts9yEQjhgY5_xRCURoWf4rAb_0EYT7zYT=w240-h240",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.icodedtech.customersupportsysterm"
+  },
+  {
+    "id": "com.spark.em7886",
+    "name": "M & H Group",
+    "fallbackCategory": "Event Management",
+    "fetchedTitle": "M & H Group",
+    "desc": "Welcome to M & H Group !!! Now you can manage easily your events with us.",
+    "localImage": "/live_assets/apps/com.spark.em7886.png",
+    "iconUrl": "https://play-lh.googleusercontent.com/5wdgLO9JQhp78fa0vMioSJUQLB2z2kJ80wWco8fZ9gMSHOPPzNXO8INxR_igfMzLY0Af91AOojTYWY6mtBhN=w240-h240",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.spark.em7886"
+  },
+  {
+    "id": "com.quicks.krivisha",
+    "name": "Krivisha",
+    "fallbackCategory": "Lifestyle & Retail",
+    "fetchedTitle": "Krivisha",
+    "desc": "Welcome to the official Krivisha mobile application, the all-in-one enterprise solution designed exclusively for Krivisha employees to streamline daily operations, manage supply chains, and ...",
+    "localImage": "/live_assets/apps/com.quicks.krivisha.png",
+    "iconUrl": "https://play-lh.googleusercontent.com/4cDJPWBl1X5iCeVbUDVpY23WEQPvr_j_ov6gY7JUllS1SgQzyTDL4rBOEAOsACSkjsxfDwzT9qLrOQYNlcrtnA=w240-h240",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.quicks.krivisha"
+  },
+  {
+    "id": "com.spark.newapp2",
+    "name": "My HMSE Tech",
+    "fallbackCategory": "Smart Security & CCTV",
+    "fetchedTitle": "My HMSE Tech",
+    "desc": "HMSE TECHNOLOGIES has been providing top-notch security systems to residential and commercial clients. We started as a small business with a vision to make security systems accessible to eve...",
+    "localImage": "/live_assets/apps/com.spark.newapp2.png",
+    "iconUrl": "https://play-lh.googleusercontent.com/iZ5v38i1uXfoZgmaFHG1GfBmKNdJNi5hVrZFh0Fr3-ZeQqfXd8-UUY_0CuAI_uF6g6Uk5AlCCwfUVgVQSCnh=w240-h240",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.spark.newapp2"
+  },
+  {
+    "id": "com.spark.smartguruji",
+    "name": "Expert Guruji",
+    "fallbackCategory": "Education & Tutoring",
+    "fetchedTitle": "Expert Guruji",
+    "desc": "Be smart with Expert Guruji !!! It is truly your expert buddy. It handles your class management work very easily.You can do many more things with E-Guruji like :&gt; Manage your class studen...",
+    "localImage": "/live_assets/apps/com.spark.smartguruji.png",
+    "iconUrl": "https://play-lh.googleusercontent.com/a5PBiViz5yrrhqvCGhVhd17KyWAYefl52gdn9X3XUadwkfzSPcA-LCI4-wkrF6ldeMGkvqj7-RXxyHWrvxvM2g=w240-h240",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.spark.smartguruji"
+  },
+  {
+    "id": "com.spark.growpublicservice",
+    "name": "Grow Public Service",
+    "fallbackCategory": "Public & Civic Services",
+    "fetchedTitle": "Grow Public Service",
+    "desc": "Grow Public Services (E-Seva) is a comprehensive, mobile-first e-governance platform built to modernize and streamline the delivery of essential government and civic services. At its core, t...",
+    "localImage": "/live_assets/apps/com.spark.growpublicservice.png",
+    "iconUrl": "https://play-lh.googleusercontent.com/ENOIczPK2Kz4AERDwfF3eAB3N96cCSZJp7odxncdl6MNojULx1nvRTzATH6EvZ1gNoH0rc3xFtMYXc39nsjD=w240-h240",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.spark.growpublicservice"
+  },
+  {
+    "id": "com.app.udaanjob_s",
+    "name": "Udaan Jobs",
+    "fallbackCategory": "Jobs & Recruitment",
+    "fetchedTitle": "Udaan Jobs",
+    "desc": "Your Dream Job Awaits!Discover thousands of job opportunities that match your skills, interests, and career goals. Whether you&#39;re a fresher or an experienced professional, our app helps ...",
+    "localImage": "/live_assets/apps/com.app.udaanjob_s.png",
+    "iconUrl": "https://play-lh.googleusercontent.com/0xup8YohGFcXNK-QDVx25GQ5PhNtWk_gIcq48npIrQP4TW2rOoObk4s-NRGBV7zL6Ly_xOf2LhGPWBTVB0hL=w240-h240",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.app.udaanjob_s"
+  }
+]

@@ -1,0 +1,1516 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    max-width: 100%;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+}
+
+/* Material Symbols Outlined font */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}
+
+/* Kinetic Mesh & Glowing Orbs Animations */
+@keyframes orb-float-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.45; }
+  50% { transform: translate3d(40px, -35px, 0) scale(1.15); opacity: 0.7; }
+}
+@keyframes orb-float-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.1); opacity: 0.5; }
+  50% { transform: translate3d(-50px, 30px, 0) scale(0.9); opacity: 0.3; }
+}
+@keyframes orb-float-3 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.35; }
+  50% { transform: translate3d(30px, 40px, 0) scale(1.2); opacity: 0.6; }
+}
+
+.animate-orb-1 { animation: orb-float-1 12s ease-in-out infinite; will-change: transform, opacity; }
+.animate-orb-2 { animation: orb-float-2 15s ease-in-out infinite; will-change: transform, opacity; }
+.animate-orb-3 { animation: orb-float-3 10s ease-in-out infinite; will-change: transform, opacity; }
+
+/* Bobbing & Floating Micro-delays for Hero cards */
+@keyframes float-stagger-1 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes float-stagger-2 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
+}
+@keyframes float-stagger-3 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-9px); }
+}
+
+.animate-float-1 { animation: float-stagger-1 5s ease-in-out infinite; }
+.animate-float-2 { animation: float-stagger-2 5.8s ease-in-out 1.5s infinite; }
+.animate-float-3 { animation: float-stagger-3 4.8s ease-in-out 3s infinite; }
+
+/* Shimmer Sheen & Glow */
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  100% { transform: translateX(250%) skewX(-20deg); }
+}
+
+.sheen-glow {
+  position: relative;
+  overflow: hidden;
+}
+.sheen-glow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: shimmer-sweep 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+@keyframes gradient-border-pulse {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.glowing-border-wrapper {
+  background: linear-gradient(135deg, rgba(35, 40, 132, 0.4), rgba(56, 189, 248, 0.5), rgba(79, 85, 176, 0.4));
+  background-size: 200% 200%;
+  animation: gradient-border-pulse 6s ease infinite;
+}
+
+/* Continuous Marquee Ticker */
+
+/* Custom subtle scrollbar for sticky sidebar */
+.custom-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+}
+.custom-sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+.custom-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6);
+}
+
+@keyframes marquee {
+  0% { transform: translate3d(0%, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+  will-change: transform;
+}
+.marquee-track:hover { animation-play-state: paused; }
+
+.hero-dot-grid {
+  background-image: radial-gradient(rgba(35, 40, 132, 0.12) 1.25px, transparent 1.25px);
+  background-size: 24px 24px;
+}
+
+/* 3D Interactive Card Lift & Dynamic Glow */
+.interactive-card {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.28s ease;
+  will-change: transform, box-shadow;
+}
+.interactive-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 38px -10px rgba(35, 40, 132, 0.18), 0 4px 16px rgba(56, 189, 248, 0.12);
+  border-color: rgba(59, 130, 246, 0.5) !important;
+}
+.interactive-card:active {
+  transform: translateY(-2px) scale(0.99);
+}
+
+/* Icon micro-interactions */
+.icon-hover-effect {
+  transition: transform 0.45s cubic-bezier(0.34, 1.6, 0.64, 1);
+}
+.interactive-card:hover .icon-hover-effect {
+  transform: scale(1.18) rotate(4deg);
+}
+
+/* Button Glow & Active Click Feedback */
+.btn-glow {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.btn-glow:hover {
+  box-shadow: 0 12px 28px -5px rgba(35, 40, 132, 0.4), 0 0 20px rgba(56, 189, 248, 0.35);
+  transform: translateY(-3px) scale(1.02);
+}
+.btn-glow:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+/* =========================================================================
+   ITPLCONNECT.COM SIGNATURE ANIMATIONS & CARD INTERACTIONS
+   ========================================================================= */
+
+@keyframes itpl-whatsapp-float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 8px 22px rgba(37, 211, 102, 0.45);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 14px 30px rgba(37, 211, 102, 0.65);
+  }
+}
+.animate-whatsapp-pulse {
+  animation: itpl-whatsapp-float 2.2s ease-in-out infinite;
+}
+
+@keyframes itpl-phone-ring {
+  0%, 100% { transform: rotate(0) scale(1); }
+  10%, 30% { transform: rotate(-14deg) scale(1.1); }
+  20%, 40% { transform: rotate(14deg) scale(1.1); }
+  50% { transform: rotate(0) scale(1); }
+  60% { transform: scale(1.08); }
+  70% { transform: scale(1); }
+}
+.animate-phone-ring {
+  transform-origin: center;
+  animation: itpl-phone-ring 2.4s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes itpl-btn-glow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(35, 40, 132, 0.25);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 8px 28px rgba(35, 40, 132, 0.45);
+  }
+}
+.animate-btn-pulse-glow {
+  animation: itpl-btn-glow 2.4s ease-in-out infinite;
+}
+
+@keyframes button-glow-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 6px 28px rgba(34, 197, 94, 0.75);
+  }
+}
+.animate-btn-glow {
+  animation: 2.2s ease-in-out infinite button-glow-pulse;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+.animate-shimmer {
+  animation: 3.2s infinite shimmer;
+}
+
+@keyframes itpl-icon-wiggle {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  20% { transform: scale(1.15) rotate(-10deg); }
+  40% { transform: scale(1.15) rotate(10deg); }
+  60% { transform: scale(1); }
+}
+.animate-icon-wiggle {
+  animation: itpl-icon-wiggle 2.5s ease-in-out infinite;
+}
+
+/* ITPL Connect Card Interactive System */
+.itpl-card {
+  position: relative;
+  overflow: hidden;
+  background-color: #ffffff;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(197, 198, 210, 0.35);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow, border-color;
+}
+
+.itpl-card:hover {
+  border-color: rgba(61, 72, 200, 0.45) !important;
+  background-color: #ffffff;
+  box-shadow: 0 20px 45px rgba(35, 40, 132, 0.12), 0 0 20px rgba(61, 72, 200, 0.08);
+  transform: translateY(-8px) scale(1.02);
+}
+
+.itpl-card:active {
+  transform: translateY(-2px) scale(0.98);
+  transition-duration: 0.15s;
+}
+
+/* Light shimmer sweep across the card on hover */
+.itpl-card-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: translateX(-100%);
+  transition: transform 1s ease-in-out;
+  pointer-events: none;
+  z-index: 20;
+}
+.group:hover .itpl-card-shimmer,
+.itpl-card:hover .itpl-card-shimmer {
+  transform: translateX(100%);
+}
+
+/* Top expanding accent line on card hover */
+.itpl-card-accent-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(to right, #232884, #3D48C8, #4F46E5);
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 25;
+}
+.group:hover .itpl-card-accent-line,
+.itpl-card:hover .itpl-card-accent-line {
+  transform: scaleX(1);
+}
+
+/* Icon rotation and scale on card hover */
+.itpl-icon-box {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .itpl-icon-box,
+.itpl-card:hover .itpl-icon-box {
+  transform: scale(1.12) rotate(6deg);
+  box-shadow: 0 10px 24px -4px rgba(35, 40, 132, 0.28);
+}
+
+/* =========================================================================
+   BOUNCE CARDS & SPRING PHYSICS ANIMATIONS
+   ========================================================================= */
+
+@keyframes bounce-card-in {
+  0% {
+    opacity: 0;
+    transform: translateY(44px) scale(0.91);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-9px) scale(1.025);
+  }
+  80% {
+    transform: translateY(3px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bounce-header-in {
+  0% {
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bounce-pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes gentle-bounce-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes badge-float-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2.5px);
+  }
+}
+
+@keyframes text-gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-text {
+  background-size: 200% 200%;
+  animation: text-gradient-shift 5s ease infinite;
+}
+
+/* The Bounce Card Utility with itplconnect.com Signature Hover Animation */
+.bounce-card,
+.stitch-card,
+.interactive-card,
+.bounce-card-dark,
+.itpl-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.3s ease,
+              background-color 0.3s ease;
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
+}
+
+/* Top Accent Gradient Bar matching itplconnect.com image 2 */
+.bounce-card::before,
+.stitch-card::before,
+.interactive-card::before,
+.bounce-card-dark::before,
+.itpl-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, #ff4e50 0%, #f97316 50%, #f9d423 100%);
+  opacity: 0.85;
+  transition: opacity 0.35s ease, height 0.35s ease, box-shadow 0.35s ease;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.bounce-card:hover::before,
+.stitch-card:hover::before,
+.interactive-card:hover::before,
+.bounce-card-dark:hover::before,
+.itpl-card:hover::before,
+.group:hover::before {
+  opacity: 1;
+  height: 4.5px;
+  box-shadow: 0 2px 14px rgba(249, 115, 22, 0.7);
+}
+
+.bounce-card:hover,
+.stitch-card:hover,
+.interactive-card:hover,
+.itpl-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 22px 45px -10px rgba(15, 23, 42, 0.18),
+              0 0 30px 2px rgba(249, 115, 22, 0.18);
+  border-color: rgba(249, 115, 22, 0.45) !important;
+}
+
+.bounce-card:active,
+.stitch-card:active,
+.interactive-card:active,
+.itpl-card:active {
+  transform: translateY(-2px) scale(0.99);
+  transition-duration: 0.15s;
+}
+
+/* Dark variant for dark theme / Mission/Vision cards */
+.bounce-card-dark {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.3s ease;
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
+}
+
+.bounce-card-dark:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 25px 55px -10px rgba(0, 0, 0, 0.5),
+              0 0 35px 2px rgba(249, 115, 22, 0.3);
+  border-color: rgba(249, 115, 22, 0.55) !important;
+}
+
+.bounce-card-dark:active {
+  transform: translateY(-3px) scale(0.99);
+  transition-duration: 0.15s;
+}
+
+/* Micro-interactions inside Bounce Cards */
+.bounce-card-icon {
+  transition: transform 0.45s cubic-bezier(0.34, 1.6, 0.64, 1),
+              background 0.3s ease,
+              color 0.3s ease,
+              box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+.bounce-card:hover .bounce-card-icon,
+.stitch-card:hover .bounce-card-icon,
+.interactive-card:hover .bounce-card-icon,
+.bounce-card-dark:hover .bounce-card-icon,
+.itpl-card:hover .bounce-card-icon,
+.group:hover .bounce-card-icon {
+  transform: scale(1.15) rotate(4deg);
+}
+
+.bounce-card-arrow {
+  transition: transform 0.4s cubic-bezier(0.34, 1.6, 0.64, 1),
+              color 0.25s ease,
+              background 0.25s ease;
+  will-change: transform;
+}
+
+.bounce-card:hover .bounce-card-arrow,
+.stitch-card:hover .bounce-card-arrow,
+.interactive-card:hover .bounce-card-arrow,
+.bounce-card-dark:hover .bounce-card-arrow,
+.itpl-card:hover .bounce-card-arrow,
+.group:hover .bounce-card-arrow {
+  transform: translateX(6px) scale(1.12);
+}
+
+.bounce-card-feat {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background-color 0.25s ease,
+              border-color 0.25s ease;
+}
+
+.bounce-card:hover .bounce-card-feat {
+  transform: translateX(4px);
+}
+
+.bounce-badge {
+  animation: badge-float-subtle 3.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Interactive Bounce Button */
+.btn-bounce {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background-color 0.25s ease,
+              border-color 0.25s ease;
+  will-change: transform, box-shadow;
+}
+
+.btn-bounce:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 28px -6px rgba(35, 40, 132, 0.35),
+              0 0 16px rgba(61, 72, 200, 0.2);
+}
+
+.btn-bounce:active {
+  transform: translateY(1px) scale(0.97);
+  transition-duration: 0.15s;
+}
+
+/* Interactive Pill Bounce */
+.pill-bounce {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease;
+}
+
+.pill-bounce:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* Interactive Container Entrance & Spring Reveal */
+.animate-bounce-in {
+  animation: bounce-card-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-bounce-header {
+  animation: bounce-header-in 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-bounce-pop {
+  animation: bounce-pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-gentle-float {
+  animation: gentle-bounce-float 4.5s ease-in-out infinite;
+}
+
+/* Staggered entrance delays */
+.delay-stagger-1 { animation-delay: 60ms; }
+.delay-stagger-2 { animation-delay: 130ms; }
+.delay-stagger-3 { animation-delay: 200ms; }
+.delay-stagger-4 { animation-delay: 270ms; }
+.delay-stagger-5 { animation-delay: 340ms; }
+.delay-stagger-6 { animation-delay: 410ms; }
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-orb-1, .animate-orb-2, .animate-orb-3,
+  .animate-float-1, .animate-float-2, .animate-float-3,
+  .sheen-glow::after, .marquee-track,
+  .animate-gradient-text, .bounce-badge,
+  .animate-bounce-in, .animate-bounce-header,
+  .animate-bounce-pop, .animate-gentle-float {
+    animation: none !important;
+  }
+  .interactive-card:hover,
+  .bounce-card:hover,
+  .bounce-card-dark:hover,
+  .btn-bounce:hover,
+  .pill-bounce:hover {
+    transform: none !important;
+  }
+}
+
+/* Stitch Design System Utilities */
+.font-mono-tech {
+  font-family: 'JetBrains Mono', monospace, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas;
+}
+
+.stitch-grid {
+  background-image: linear-gradient(to right, rgba(35, 40, 132, 0.06) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(35, 40, 132, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.stitch-card {
+  position: relative;
+  background: #FFFFFF;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stitch-card:hover {
+  border-color: rgba(61, 72, 200, 0.45);
+  box-shadow: 0 20px 42px -10px rgba(35, 40, 132, 0.16), 0 0 0 1px rgba(61, 72, 200, 0.15);
+  transform: translateY(-8px) scale(1.015);
+}
+
+.stitch-card:active {
+  transform: translateY(-2px) scale(0.99);
+}
+
+.stitch-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tech-glow-pill {
+  box-shadow: 0 0 20px rgba(61, 72, 200, 0.25);
+}
+
+.cyan-glow-badge {
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+}
+
+.emerald-glow-badge {
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
+}
+
+/* Featured IT Services Enhanced Hover Glow */
+.featured-card-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.featured-card-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(61, 72, 200, 0.12), transparent 75%);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  opacity: 0;
+}
+
+.featured-card-glow:hover::before {
+  opacity: 1;
+}
+
+/* =========================================================================
+   MOBILE VIEW ANIMATIONS & RESPONSIVE TACTILE EFFECTS
+   ========================================================================= */
+
+/* =========================================================================
+   MOBILE LIVE ANIMATIONS & USER INTERACTION SYSTEM
+   Gentle floating physics, glowing breathing pulses, flowing top accent lines,
+   shimmer light sweeps, and tactile touch press for cards & boxes on mobile
+   ========================================================================= */
+
+@keyframes mobile-gentle-bounce-1 {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4.5px);
+  }
+}
+
+@keyframes mobile-gentle-bounce-2 {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3.5px);
+  }
+}
+
+@keyframes mobile-gentle-bounce-3 {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Subtle Mobile Glow Pulse on Cards */
+@keyframes mobile-card-glow {
+  0%, 100% {
+    box-shadow: 0 8px 25px -5px rgba(35, 40, 132, 0.08);
+  }
+  50% {
+    box-shadow: 0 14px 30px -6px rgba(35, 40, 132, 0.16), 0 0 16px 1px rgba(61, 72, 200, 0.12);
+  }
+}
+
+/* Flowing Top Accent Line on Mobile Cards */
+@keyframes mobile-accent-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Periodic Shimmer Light Sweep on Mobile Cards */
+@keyframes mobile-card-shimmer {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.6;
+  }
+  24%, 100% {
+    transform: translateX(250%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+/* Gentle Icon Breathing on Mobile */
+@keyframes mobile-icon-wiggle {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.09) rotate(3deg);
+  }
+}
+
+/* Micro-Arrow Bounce on Mobile */
+@keyframes mobile-arrow-nudge {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+/* Subtle Live Breathing for Stat Boxes */
+@keyframes mobile-stat-pulse {
+  0%, 100% {
+    border-color: rgba(35, 40, 132, 0.15);
+    box-shadow: 0 4px 15px -3px rgba(35, 40, 132, 0.06);
+  }
+  50% {
+    border-color: rgba(61, 72, 200, 0.4);
+    box-shadow: 0 8px 22px -4px rgba(35, 40, 132, 0.16), 0 0 14px rgba(61, 72, 200, 0.12);
+  }
+}
+
+/* Continuous Subtle Live Animations for Mobile Cards & Boxes */
+@media (max-width: 768px) {
+  /* Staggered gentle float and glow on cards */
+  .itpl-card:nth-child(3n + 1),
+  .bounce-card:nth-child(3n + 1),
+  .stitch-card:nth-child(3n + 1),
+  .hover-lift-card:nth-child(3n + 1),
+  .mobile-float-card:nth-child(3n + 1) {
+    animation: mobile-gentle-bounce-1 5.8s ease-in-out infinite, mobile-card-glow 5.8s ease-in-out infinite;
+  }
+
+  .itpl-card:nth-child(3n + 2),
+  .bounce-card:nth-child(3n + 2),
+  .stitch-card:nth-child(3n + 2),
+  .hover-lift-card:nth-child(3n + 2),
+  .mobile-float-card:nth-child(3n + 2) {
+    animation: mobile-gentle-bounce-2 6.4s ease-in-out 1s infinite, mobile-card-glow 6.4s ease-in-out 1s infinite;
+  }
+
+  .itpl-card:nth-child(3n),
+  .bounce-card:nth-child(3n),
+  .stitch-card:nth-child(3n),
+  .hover-lift-card:nth-child(3n),
+  .mobile-float-card:nth-child(3n) {
+    animation: mobile-gentle-bounce-3 5.4s ease-in-out 2s infinite, mobile-card-glow 5.4s ease-in-out 2s infinite;
+  }
+
+  /* Top Accent Lines on Cards visible and flowing in real-time */
+  .itpl-card-accent-line,
+  .bounce-card::before,
+  .stitch-card::before {
+    transform: scaleX(1) !important;
+    opacity: 0.92 !important;
+    background-size: 200% 100% !important;
+    animation: mobile-accent-flow 4s ease infinite !important;
+  }
+
+  /* Card icons gently breathe and arrows nudge forward on mobile */
+  .itpl-icon-box,
+  .bounce-card-icon,
+  .hover-tilt-icon {
+    animation: mobile-icon-wiggle 5.5s ease-in-out infinite !important;
+  }
+
+  .bounce-card-arrow {
+    animation: mobile-arrow-nudge 2.8s ease-in-out infinite !important;
+  }
+
+  /* Shimmer light sweeps across mobile cards periodically */
+  .itpl-card-shimmer {
+    animation: mobile-card-shimmer 7.5s ease-in-out infinite !important;
+    opacity: 0.35 !important;
+  }
+  .itpl-card:nth-child(2n) .itpl-card-shimmer {
+    animation-delay: 2.5s !important;
+  }
+  .itpl-card:nth-child(3n) .itpl-card-shimmer {
+    animation-delay: 5s !important;
+  }
+
+  /* Stat cards live breathing pulse */
+  .sheen-glow {
+    animation: mobile-stat-pulse 4.8s ease-in-out infinite !important;
+  }
+}
+
+/* Tactile User Interaction: Spring Press & Active Highlight for Mobile Touch */
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+  .itpl-card:active,
+  .stitch-card:active,
+  .bounce-card:active,
+  .bounce-card-dark:active,
+  .hover-lift-card:active,
+  .interactive-card:active {
+    transform: scale(0.975) translateY(-1px) !important;
+    box-shadow: 0 14px 28px -6px rgba(35, 40, 132, 0.22), 0 0 16px rgba(61, 72, 200, 0.16) !important;
+    border-color: rgba(61, 72, 200, 0.6) !important;
+    transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.4, 1),
+                box-shadow 0.12s ease,
+                border-color 0.12s ease !important;
+  }
+
+  .itpl-card:active .itpl-icon-box,
+  .itpl-card:active .bounce-card-icon,
+  .stitch-card:active .bounce-card-icon,
+  .bounce-card:active .bounce-card-icon,
+  .hover-lift-card:active .hover-tilt-icon {
+    transform: scale(1.15) rotate(5deg) !important;
+    transition: transform 0.12s ease !important;
+  }
+
+  .itpl-card:active .bounce-card-arrow,
+  .bounce-card:active .bounce-card-arrow {
+    transform: translateX(6px) !important;
+    color: #232884 !important;
+    transition: transform 0.12s ease !important;
+  }
+
+  .btn-bounce:active,
+  .tap-feedback:active {
+    transform: scale(0.96) translateY(1px) !important;
+    transition-duration: 0.12s !important;
+  }
+
+  .pill-bounce:active {
+    transform: scale(0.95) !important;
+    transition-duration: 0.12s !important;
+  }
+}
+
+/* Clean hide scrollbars for horizontal scrollable pills on mobile */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* =========================================================================
+   GLOBAL SMOOTH ANIMATION SUITE & SCROLL REVEAL ENGINE
+   Responsive, 60fps GPU-accelerated, lightweight animations
+   ========================================================================= */
+
+/* Smooth page entrance on route change */
+@keyframes page-enter-smooth {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-page-enter {
+  animation: page-enter-smooth 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Scroll reveal initial states */
+.scroll-reveal,
+.reveal-up {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-down {
+  opacity: 0;
+  transform: translate3d(0, -26px, 0);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translate3d(-28px, 0, 0);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translate3d(28px, 0, 0);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-zoom {
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* Mobile-friendly micro offsets so there is never overflow on small screens */
+@media (max-width: 640px) {
+  .scroll-reveal,
+  .reveal-up {
+    transform: translate3d(0, 16px, 0);
+  }
+  .reveal-down {
+    transform: translate3d(0, -16px, 0);
+  }
+  .reveal-left {
+    transform: translate3d(-14px, 0, 0);
+  }
+  .reveal-right {
+    transform: translate3d(14px, 0, 0);
+  }
+  .reveal-zoom {
+    transform: scale(0.96);
+  }
+}
+
+/* Revealed active state */
+.scroll-reveal.is-revealed,
+.reveal-up.is-revealed,
+.reveal-down.is-revealed,
+.reveal-left.is-revealed,
+.reveal-right.is-revealed,
+.reveal-zoom.is-revealed {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+}
+
+/* Staggered delay utility classes for grid & list items */
+.delay-50 { transition-delay: 50ms !important; }
+.delay-100 { transition-delay: 100ms !important; }
+.delay-150 { transition-delay: 150ms !important; }
+.delay-200 { transition-delay: 200ms !important; }
+.delay-250 { transition-delay: 250ms !important; }
+.delay-300 { transition-delay: 300ms !important; }
+.delay-350 { transition-delay: 350ms !important; }
+.delay-400 { transition-delay: 400ms !important; }
+.delay-500 { transition-delay: 500ms !important; }
+
+/* Ultra-smooth interactive card hover lift & shadow */
+.hover-lift-card {
+  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.28s ease !important;
+  will-change: transform, box-shadow;
+}
+.hover-lift-card:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 18px 36px -10px rgba(35, 40, 132, 0.16), 0 0 20px rgba(61, 72, 200, 0.08) !important;
+  border-color: rgba(61, 72, 200, 0.4) !important;
+}
+.hover-lift-card:active {
+  transform: translateY(-1px) scale(0.985);
+  transition-duration: 0.15s;
+}
+
+/* Smooth Image Zoom on hover */
+.hover-zoom-img {
+  overflow: hidden;
+}
+.hover-zoom-img img {
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+  will-change: transform;
+}
+.group:hover .hover-zoom-img img,
+.hover-zoom-img:hover img {
+  transform: scale(1.08);
+}
+
+/* Smooth Icon Hover Tilt */
+.hover-tilt-icon {
+  transition: transform 0.45s cubic-bezier(0.34, 1.6, 0.64, 1), background-color 0.3s ease;
+  will-change: transform;
+}
+.group:hover .hover-tilt-icon,
+.hover-tilt-icon:hover {
+  transform: scale(1.14) rotate(5deg);
+}
+
+/* Subtle pulse glow for primary CTAs and status pills */
+@keyframes subtle-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(35, 40, 132, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 16px 2px rgba(61, 72, 200, 0.32);
+  }
+}
+.pulse-glow-subtle {
+  animation: subtle-glow-pulse 3.5s ease-in-out infinite;
+}
+
+/* Soft floating badge animation */
+@keyframes float-subtle-y {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+.float-subtle {
+  animation: float-subtle-y 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Smooth button tap feedback for touch and mobile */
+.tap-feedback {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), filter 0.15s ease;
+}
+.tap-feedback:active {
+  transform: scale(0.96);
+  filter: brightness(0.95);
+}
+
+/* =========================================================================
+   AUTOMATIC ENQUIRY FORM POPUP & REAL-TIME ANIMATIONS (DESKTOP & MOBILE)
+   Smooth spring popup, ambient glowing halo, continuous gradient flow,
+   live status beacon, and real-time button light-sweep
+   ========================================================================= */
+@keyframes enquiry-backdrop-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes enquiry-modal-pop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 32px, 0) scale(0.93);
+  }
+  65% {
+    opacity: 1;
+    transform: translate3d(0, -5px, 0) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes enquiry-modal-mobile {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 48px, 0) scale(0.92);
+  }
+  68% {
+    opacity: 1;
+    transform: translate3d(0, -4px, 0) scale(1.012);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Continuous Real-time Glow Pulse around Modal */
+@keyframes enquiry-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 20px 50px -10px rgba(35, 40, 132, 0.28), 0 0 24px -4px rgba(61, 72, 200, 0.22);
+  }
+  50% {
+    box-shadow: 0 25px 60px -8px rgba(35, 40, 132, 0.42), 0 0 32px 0px rgba(245, 158, 11, 0.28);
+  }
+}
+
+/* Continuous Real-time Flowing Top Gradient Wave */
+@keyframes enquiry-gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Continuous Real-time Shimmer Light Sweep across CTA Button */
+@keyframes enquiry-shimmer-sweep {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  45%, 100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
+
+/* Real-time gentle float physics for the consultant icon */
+@keyframes enquiry-icon-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-enquiry-backdrop {
+  animation: enquiry-backdrop-fade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity;
+}
+
+.animate-enquiry-modal {
+  animation: enquiry-modal-pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+             enquiry-glow-pulse 4s ease-in-out infinite 0.5s;
+  will-change: transform, opacity, box-shadow;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.animate-enquiry-flow {
+  background-size: 200% 200%;
+  animation: enquiry-gradient-flow 3.5s ease infinite;
+}
+
+.animate-enquiry-shimmer {
+  animation: enquiry-shimmer-sweep 2.6s ease-in-out infinite;
+}
+
+.animate-enquiry-icon {
+  animation: enquiry-icon-float 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (max-width: 640px) {
+  .animate-enquiry-modal {
+    animation: enquiry-modal-mobile 0.46s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+               enquiry-glow-pulse 4s ease-in-out infinite 0.46s;
+  }
+}
+
+/* =========================================================================
+   FLOATING BOOKLET BUTTON ANIMATIONS (CORNER WIDGET)
+   Continuous floating bounce, expanding pulse halo, and opening spin
+   ========================================================================= */
+@keyframes booklet-float {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 10px 25px -4px rgba(35, 40, 132, 0.4), 0 0 18px rgba(245, 158, 11, 0.25);
+  }
+  50% {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 32px -4px rgba(35, 40, 132, 0.5), 0 0 24px rgba(245, 158, 11, 0.4);
+  }
+}
+
+@keyframes booklet-halo-pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+}
+
+@keyframes booklet-book-rock {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-7deg) scale(1.05);
+  }
+  75% {
+    transform: rotate(7deg) scale(1.05);
+  }
+}
+
+@keyframes booklet-open-spin {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.15) rotate(180deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+.animate-booklet-float {
+  animation: booklet-float 3.6s ease-in-out infinite;
+  will-change: transform, box-shadow;
+}
+
+.animate-booklet-halo {
+  animation: booklet-halo-pulse 2.8s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.animate-booklet-rock {
+  animation: booklet-book-rock 3s ease-in-out infinite;
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+.animate-booklet-opening {
+  animation: booklet-open-spin 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+/* Hide modal and booklet button in print */
+@media print {
+  .animate-enquiry-backdrop,
+  .animate-enquiry-modal,
+  .booklet-corner-button {
+    display: none !important;
+  }
+}
+
+/* =========================================================================
+   BULLETPROOF PRINT STYLES FOR ITPL OFFER LETTERS & OFFICIAL CERTIFICATES
+   Zero blank pages, exact 1:1 A4 letterhead & digital rendering
+   ========================================================================= */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0mm !important;
+  }
+
+  /* Force exact background colors, gradients, images & text contrast in all browsers */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 1. Global Reset for html, body, and all App.tsx layout wrappers */
+  html,
+  body {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+  }
+
+  #root,
+  #root > div,
+  .min-h-screen,
+  main,
+  .animate-page-enter,
+  .admin-page-root,
+  .admin-page-container,
+  .admin-page-grid,
+  .admin-page-main,
+  .offer-letter-page-root,
+  .offer-letter-page-container,
+  .offer-letter-outer-wrapper,
+  .offer-letter-grid-wrapper,
+  .offer-letter-preview-column,
+  .certificate-preview-column,
+  .certificate-modal-overlay,
+  .certificate-modal-container {
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-width: 210mm !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    display: block !important;
+    position: static !important;
+    border: none !important;
+    box-shadow: none !important;
+    float: none !important;
+    inset: auto !important;
+    gap: 0 !important;
+  }
+
+  /* Remove all vertical margin-top spacing between wrappers in print */
+  .admin-page-main > * + *,
+  .offer-letter-outer-wrapper > * + *,
+  .offer-letter-preview-column > * + *,
+  .certificate-preview-column > * + *,
+  .space-y-6 > * + *,
+  .space-y-4 > * + * {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* 2. Hide all non-printable UI elements */
+  header,
+  footer,
+  aside,
+  nav,
+  .no-print,
+  button,
+  .scroll-reveal:not(.is-revealed) {
+    display: none !important;
+  }
+
+  /* Hide pre-printed letterhead decorative guidelines and watermark when printing on stationery */
+  .letterhead-print-hidden,
+  .print-hide-header-footer .letterhead-header,
+  .print-hide-header-footer .letterhead-footer,
+  .print-hide-header-footer .letterhead-watermark {
+    display: none !important;
+  }
+
+  /* 3. Certificate Modal Print Support (Strip dark modal overlay backdrop) */
+  .certificate-modal-overlay {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    z-index: auto !important;
+  }
+
+  .certificate-modal-container > .grid {
+    display: block !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+
+  /* When printing certificates: completely hide the admin workspace container */
+  body.certificate-modal-open .admin-page-container,
+  body.printing-certificate-only .admin-page-container,
+  body.printing-bonafide-only .admin-page-container {
+    display: none !important;
+  }
+
+  /* 4. EXACT A4 PRINT LAYOUT FOR CERTIFICATES */
+  #itpl-certificate-printable,
+  #itpl-bonafide-document {
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-width: 210mm !important;
+    height: 296mm !important;
+    min-height: 296mm !important;
+    max-height: 296.5mm !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  /* 5. EXACT A4 PRINT LAYOUT FOR OFFER LETTER PAGES */
+  #offer-letter-page-1,
+  #offer-letter-page-2 {
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-width: 210mm !important;
+    height: 296mm !important;
+    min-height: 296mm !important;
+    max-height: 296.5mm !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Both Pages Printing (Default) */
+  body:not([data-offer-print-scope="page1"]):not([data-offer-print-scope="page2"]) #offer-letter-page-1,
+  body[data-offer-print-scope="both"] #offer-letter-page-1,
+  #offer-letter-page-1.print-both-pages {
+    display: flex !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    margin-bottom: 0 !important;
+  }
+
+  body:not([data-offer-print-scope="page1"]):not([data-offer-print-scope="page2"]) #offer-letter-page-2,
+  body[data-offer-print-scope="both"] #offer-letter-page-2,
+  #offer-letter-page-2.print-both-pages {
+    display: flex !important;
+    page-break-before: auto !important;
+    break-before: auto !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Single-page: Page 1 Only */
+  body[data-offer-print-scope="page1"] #offer-letter-page-1,
+  #offer-letter-page-1.print-page1-only {
+    display: flex !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  body[data-offer-print-scope="page1"] #offer-letter-page-2 {
+    display: none !important;
+  }
+
+  /* Single-page: Page 2 Only */
+  body[data-offer-print-scope="page2"] #offer-letter-page-1 {
+    display: none !important;
+  }
+  body[data-offer-print-scope="page2"] #offer-letter-page-2,
+  #offer-letter-page-2.print-page2-only {
+    display: flex !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+}
+
+
+
