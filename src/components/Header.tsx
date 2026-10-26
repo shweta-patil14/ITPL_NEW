@@ -89,30 +89,30 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onOpenApplyMod
           scrolled ? 'shadow-[0_6px_30px_rgba(0,17,58,0.7)]' : ''
         }`}
       >
-        <div className="w-full px-2.5 min-[360px]:px-3.5 min-[400px]:px-4 sm:px-6 lg:px-5 xl:px-8 2xl:px-10 h-16 min-[380px]:h-18 sm:h-20 md:h-[84px] lg:h-[90px] xl:h-[96px] 2xl:h-[102px] flex items-center justify-between gap-1.5 min-[380px]:gap-2 sm:gap-3 lg:gap-3.5 xl:gap-5 max-w-full">
+        <div className="w-full px-3 sm:px-6 lg:px-6 xl:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4 max-w-full">
           {/* Brand Logo & Typography */}
           <Link
             to="/"
-            className="flex items-center justify-start gap-1.5 min-[340px]:gap-2 min-[400px]:gap-2.5 sm:gap-3 lg:gap-3.5 cursor-pointer group shrink-0 select-none"
+            className="flex items-center justify-start gap-1.5 min-[360px]:gap-2 sm:gap-2.5 cursor-pointer group shrink-0 select-none"
             aria-label="Infoyashonand Technology Home"
           >
             {/* Logo Emblem Icon - Borderless without circular frame */}
-            <div className="relative w-9 h-9 min-[340px]:w-10 min-[340px]:h-10 min-[380px]:w-11 min-[380px]:h-11 min-[440px]:w-12 min-[440px]:h-12 sm:w-15 sm:h-15 md:w-16 md:h-16 lg:w-[72px] lg:h-[72px] min-[1200px]:w-[78px] min-[1200px]:h-[78px] xl:w-[84px] xl:h-[84px] 2xl:w-[90px] 2xl:h-[90px] flex items-center justify-center group-hover:scale-105 transition-transform duration-200 shrink-0">
+            <div className="relative w-9 h-9 min-[360px]:w-10 min-[360px]:h-10 sm:w-13 sm:h-13 lg:w-14 lg:h-14 flex items-center justify-center group-hover:scale-105 transition-transform duration-200 shrink-0">
               <img
                 src="/company-logo-clean.png"
                 alt="Infoyashonand Technology Official Logo"
-                className="w-full h-full object-contain drop-shadow-md"
+                className="w-full h-full object-contain drop-shadow-sm"
               />
             </div>
 
             {/* Vertical White Divider Line */}
-            <div className="w-[1.5px] sm:w-[2px] lg:w-[2.5px] h-7 min-[340px]:h-8 min-[380px]:h-9 min-[440px]:h-10 sm:h-12 md:h-13 lg:h-14 xl:h-16 bg-white/90 rounded-full shrink-0 shadow-xs mx-1 min-[380px]:mx-1.5 sm:mx-2 lg:mx-2.5" />
+            <div className="w-[1.5px] sm:w-[2px] h-7 sm:h-9 bg-white/80 rounded-full shrink-0 shadow-xs mx-1 sm:mx-1.5" />
 
             {/* Dual-line Vector Brand Text */}
             <div className="flex items-center shrink-0 select-none">
               <svg
                 viewBox="0 0 670 170"
-                className="w-auto h-[22px] min-[340px]:h-[25px] min-[380px]:h-[28px] min-[440px]:h-[32px] sm:h-[42px] md:h-[48px] lg:h-[56px] min-[1200px]:h-[62px] xl:h-[68px] 2xl:h-[74px] shrink-0 select-none"
+                className="w-auto h-[22px] min-[360px]:h-[26px] sm:h-[36px] lg:h-[38px] xl:h-[40px] shrink-0 select-none"
                 style={{ overflow: 'visible' }}
               >
                 <text
@@ -144,10 +144,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onOpenApplyMod
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-0.5 min-[1150px]:gap-1 min-[1260px]:gap-1.5 xl:gap-2 2xl:gap-2.5 shrink">
+          <nav className="hidden lg:flex items-center gap-1 min-[1200px]:gap-1.5 xl:gap-2.5">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.href;
-              const linkClass = `px-1.5 min-[1150px]:px-2 min-[1260px]:px-2.5 xl:px-3.5 py-1.5 xl:py-2 rounded-full text-[11.5px] min-[1150px]:text-[12.5px] min-[1260px]:text-[13px] xl:text-[14px] font-semibold transition-all duration-200 whitespace-nowrap ${
+              const linkClass = `px-2.5 min-[1200px]:px-3 xl:px-3.5 py-1.5 xl:py-2 rounded-full text-[13px] xl:text-[14px] font-semibold transition-all duration-200 whitespace-nowrap ${
                 isActive
                   ? 'text-amber-300 bg-white/15 font-bold shadow-xs'
                   : 'text-slate-200 hover:text-white hover:bg-white/10'
@@ -180,22 +180,22 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onOpenApplyMod
           </nav>
 
           {/* Action CTA Button & Mobile Menu Toggle */}
-          <div className="flex items-center gap-1 min-[340px]:gap-1.5 min-[380px]:gap-2 sm:gap-2.5 shrink-0">
+          <div className="flex items-center gap-1.5 min-[380px]:gap-2 sm:gap-2.5 shrink-0">
             {/* Apply Now Action Button (Amber / Gold CTA) */}
             <button
               type="button"
               onClick={onOpenApplyModal}
-              className="inline-flex items-center gap-1 min-[380px]:gap-1.5 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:from-amber-300 hover:to-amber-200 text-[#00113a] font-extrabold text-[10px] min-[340px]:text-[11px] min-[360px]:text-xs sm:text-[13px] px-2 min-[340px]:px-2.5 min-[360px]:px-3 min-[400px]:px-4 sm:px-4.5 py-1.5 min-[360px]:py-2 sm:py-2.5 rounded-full shadow-md shadow-amber-400/25 hover:shadow-lg hover:shadow-amber-400/35 hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1 min-[380px]:gap-1.5 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:from-amber-300 hover:to-amber-200 text-[#00113a] font-extrabold text-[11px] sm:text-[13px] px-2.5 min-[380px]:px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-full shadow-md shadow-amber-400/25 hover:shadow-lg hover:shadow-amber-400/35 hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer whitespace-nowrap shrink-0"
             >
               <span>Apply Now</span>
-              <span className="material-symbols-outlined text-[14px] min-[360px]:text-[15px] sm:text-base font-bold">how_to_reg</span>
+              <span className="material-symbols-outlined text-[14px] sm:text-base font-bold">how_to_reg</span>
             </button>
 
             {/* Quote Action Button (#EC1D24 Red CTA) */}
             <button
               type="button"
               onClick={onOpenQuoteModal}
-              className="hidden min-[1340px]:inline-flex items-center gap-1.5 bg-[#EC1D24] hover:bg-[#d0151b] text-white font-bold text-xs xl:text-[13px] px-3 xl:px-4.5 py-2 xl:py-2.5 rounded-full shadow-md shadow-[#EC1D24]/30 hover:shadow-lg hover:shadow-[#EC1D24]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer whitespace-nowrap shrink-0"
+              className="hidden min-[1180px]:inline-flex items-center gap-1.5 bg-[#EC1D24] hover:bg-[#d0151b] text-white font-bold text-xs xl:text-[13px] px-3.5 xl:px-4.5 py-2 xl:py-2.5 rounded-full shadow-md shadow-[#EC1D24]/30 hover:shadow-lg hover:shadow-[#EC1D24]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer whitespace-nowrap shrink-0"
             >
               <span>Get Free Quote</span>
               <span className="material-symbols-outlined text-sm font-bold">arrow_forward</span>
