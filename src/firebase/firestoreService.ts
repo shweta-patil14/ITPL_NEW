@@ -52,6 +52,37 @@ function isReady(): boolean {
   return Boolean(db && isFirebaseConfigured);
 }
 
+/**
+ * Recursively strips undefined fields from an object so Firestore setDoc/updateDoc
+ * will never fail with "Unsupported field value: undefined"
+ */
+export function cleanForFirestore<T = any>(obj: T): T {
+  if (obj === null || obj === undefined) return obj;
+  if (Array.isArray(obj)) {
+    return obj
+      .filter((item) => item !== undefined)
+      .map((item) => (typeof item === 'object' && item !== null ? cleanForFirestore(item) : item)) as any;
+  }
+  if (typeof obj === 'object') {
+    // Preserve FieldValue (e.g. serverTimestamp()) and Date instances
+    if (obj instanceof Date || (obj.constructor && obj.constructor.name === 'FieldValue')) {
+      return obj;
+    }
+    const result: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value !== undefined) {
+        if (typeof value === 'object' && value !== null) {
+          result[key] = cleanForFirestore(value);
+        } else {
+          result[key] = value;
+        }
+      }
+    }
+    return result;
+  }
+  return obj;
+}
+
 // ============================================================================
 // APPLICATIONS SERVICE
 // ============================================================================
@@ -60,11 +91,13 @@ export async function createApplicationFirestore(app: ApplicationItem): Promise<
   if (!isReady()) return false;
   try {
     const docRef = doc(db!, COLLECTIONS.APPLICATIONS, app.id);
-    await setDoc(docRef, {
+    const cleaned = cleanForFirestore({
       ...app,
+      createdAtIso: new Date().toISOString(),
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
+    await setDoc(docRef, cleaned, { merge: true });
     console.log('✅ [Firestore] Application saved:', app.id);
     return true;
   } catch (error) {
@@ -663,14 +696,24 @@ export async function createInquiryFirestore(inquiry: ContactInquiryFirestore): 
   try {
     const inquiryId = inquiry.id || `inq-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`;
     const docRef = doc(db!, COLLECTIONS.INQUIRIES, inquiryId);
-    await setDoc(docRef, {
+    const cleaned = cleanForFirestore({
       ...inquiry,
       id: inquiryId,
+      name: inquiry.name || 'Client Lead',
+      email: inquiry.email || '',
+      phone: inquiry.phone || '',
+      service: inquiry.service || 'IT Solutions & Consulting',
+      company: inquiry.company || 'N/A',
+      budget: inquiry.budget || '₹25k - ₹50k',
+      message: inquiry.message || '',
+      source: inquiry.source || 'Website Quote Form',
       status: inquiry.status || 'New',
+      createdAtIso: new Date().toISOString(),
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-    console.log('✅ [Firestore] Inquiry recorded:', inquiryId);
+    await setDoc(docRef, cleaned, { merge: true });
+    console.log('✅ [Firestore] Inquiry recorded in real time:', inquiryId);
     return true;
   } catch (error) {
     console.error('🔥 [Firestore] Error saving inquiry:', error);
@@ -740,12 +783,33 @@ export function subscribeToInquiries(
         snapshot.forEach((d) => {
           list.push(d.data() as ContactInquiryFirestore);
         });
+
+        // Helper to resolve exact timestamp for sorting newest first
+        const resolveTimestamp = (inq: any): number => {
+          if (inq.createdAt?.seconds) return inq.createdAt.seconds * 1000;
+          if (inq.createdAt?.toMillis) return inq.createdAt.toMillis();
+          if (inq.createdAt instanceof Date) return inq.createdAt.getTime();
+          if (typeof inq.createdAtIso === 'string') {
+            const t = new Date(inq.createdAtIso).getTime();
+            if (!isNaN(t) && t > 0) return t;
+          }
+          if (typeof inq.createdAt === 'string') {
+            const t = new Date(inq.createdAt).getTime();
+            if (!isNaN(t) && t > 0) return t;
+          }
+          if (typeof inq.id === 'string') {
+            const match = inq.id.match(/\d{12,}/);
+            if (match) {
+              const parsed = parseInt(match[0], 10);
+              if (!isNaN(parsed) && parsed > 1000000000000) return parsed;
+            }
+          }
+          // Fallback: If pending local write, sort to top
+          return Date.now() + 60000;
+        };
+
         // Sort newest first
-        list.sort((a, b) => {
-          const tA = (a as any).createdAt?.seconds ? (a as any).createdAt.seconds * 1000 : new Date((a as any).createdAt || 0).getTime();
-          const tB = (b as any).createdAt?.seconds ? (b as any).createdAt.seconds * 1000 : new Date((b as any).createdAt || 0).getTime();
-          return tB - tA;
-        });
+        list.sort((a, b) => resolveTimestamp(b) - resolveTimestamp(a));
         onUpdate(list);
       },
       (error) => {
@@ -857,13 +921,15 @@ export async function loadAllFromFirestore(): Promise<{
   internships: InternshipRecord[] | null;
   employees: EmployeeMember[] | null;
   certificates: CertificateRecord[] | null;
+  inquiries: ContactInquiryFirestore[] | null;
 }> {
-  const [applications, offers, internships, employees, certificates] = await Promise.allSettled([
+  const [applications, offers, internships, employees, certificates, inquiries] = await Promise.allSettled([
     getApplicationsFirestore(),
     getOfferLettersFirestore(),
     getInternshipsFirestore(),
     getEmployeesFirestore(),
     getCertificatesFirestore(),
+    getInquiriesFirestore(),
   ]);
 
   return {
@@ -872,6 +938,7 @@ export async function loadAllFromFirestore(): Promise<{
     internships: internships.status === 'fulfilled' ? internships.value : null,
     employees: employees.status === 'fulfilled' ? employees.value : null,
     certificates: certificates.status === 'fulfilled' ? certificates.value : null,
+    inquiries: inquiries.status === 'fulfilled' ? inquiries.value : null,
   };
 }
 

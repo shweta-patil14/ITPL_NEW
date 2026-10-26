@@ -17,7 +17,7 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
   }, []);
 
   return (
-    <section className="relative w-full overflow-hidden bg-slate-900 py-16 sm:py-28 lg:py-36 border-b border-slate-800 flex items-center justify-center min-h-[70vh] sm:min-h-[85vh]">
+    <section className="relative w-full overflow-hidden bg-slate-900 pt-28 sm:pt-36 lg:pt-40 pb-16 sm:pb-28 lg:pb-36 border-b border-slate-800 flex items-center justify-center min-h-[70vh] sm:min-h-[85vh]">
       {/* Background Image Layer */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
         <img
@@ -37,8 +37,8 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
       ></div>
 
       {/* Decorative corner stitch markers */}
-      <span className="absolute top-4 left-6 text-white/40 font-mono-tech text-sm select-none z-10">+</span>
-      <span className="absolute top-4 right-6 text-white/40 font-mono-tech text-sm select-none z-10">+</span>
+      <span className="absolute top-28 sm:top-32 left-6 text-white/40 font-mono-tech text-sm select-none z-10">+</span>
+      <span className="absolute top-28 sm:top-32 right-6 text-white/40 font-mono-tech text-sm select-none z-10">+</span>
 
       <div className="relative max-w-5xl mx-auto px-4 sm:px-8 z-10 text-center flex flex-col items-center">
         {/* Top pill — Staggered entrance */}

@@ -254,23 +254,66 @@ export const AdminPage: React.FC = () => {
     };
     window.addEventListener('itpl_firestore_synced', handleFirestoreSynced);
 
+    // Audio chime helper using Web Audio API for inbound quote/inquiry notifications
+    const playNotificationChime = () => {
+      try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+      } catch {}
+    };
+
+    let prevInquiryCount = adminDb.getInquiries().length;
+
     // Live real-time Firestore listeners
     const unsubInquiries = subscribeToInquiries((cloudInquiries) => {
-      if (cloudInquiries && cloudInquiries.length > 0) {
+      if (cloudInquiries) {
+        if (cloudInquiries.length > prevInquiryCount) {
+          const newest = cloudInquiries[0];
+          playNotificationChime();
+          showToast(`🔔 New Live Inbound Lead: ${newest.name} (${newest.service || newest.company || 'Quote Request'})!`);
+        }
+        prevInquiryCount = cloudInquiries.length;
         setInquiries(cloudInquiries);
-        localStorage.setItem('itpl_inquiries', JSON.stringify(cloudInquiries));
+        try {
+          localStorage.setItem('itpl_inquiries', JSON.stringify(cloudInquiries));
+        } catch {}
       }
     });
 
     const unsubLocalInquiries = adminDb.subscribeToInquiries(() => {
-      setInquiries(adminDb.getInquiries());
+      const current = adminDb.getInquiries();
+      if (current.length > prevInquiryCount) {
+        const newest = current[0];
+        playNotificationChime();
+        showToast(`🔔 New Lead Received: ${newest.name} (${newest.service || newest.company || 'Quote Request'})!`);
+      }
+      prevInquiryCount = current.length;
+      setInquiries(current);
     });
 
     const unsubApps = subscribeToApplications((cloudApps) => {
-      if (cloudApps && cloudApps.length > 0) {
+      if (cloudApps) {
         setApplications(cloudApps);
-        localStorage.setItem('itpl_admin_applications', JSON.stringify(cloudApps));
+        try {
+          localStorage.setItem('itpl_admin_applications', JSON.stringify(cloudApps));
+        } catch {}
       }
+    });
+
+    const unsubLocalApps = adminDb.subscribeToApplications(() => {
+      setApplications(adminDb.getApplications());
     });
 
     const unsubOffers = subscribeToOffers((cloudOffers) => {
@@ -306,6 +349,7 @@ export const AdminPage: React.FC = () => {
       if (unsubInquiries) unsubInquiries();
       if (unsubLocalInquiries) unsubLocalInquiries();
       if (unsubApps) unsubApps();
+      if (unsubLocalApps) unsubLocalApps();
       if (unsubOffers) unsubOffers();
       if (unsubCerts) unsubCerts();
       if (unsubInterns) unsubInterns();
@@ -754,13 +798,21 @@ export const AdminPage: React.FC = () => {
                       <span>{item.label}</span>
                     </div>
                     {item.count !== undefined && (
-                      <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full font-mono ${
-                          isActive ? 'bg-blue-800 text-white' : 'bg-slate-100 text-slate-600'
-                        }`}
-                      >
-                        {item.count}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        {item.id === 'quotes' && inquiries.some((i) => (i.status || 'New') === 'New') && (
+                          <span className="flex h-2 w-2 relative" title="New uncontacted leads waiting">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                          </span>
+                        )}
+                        <span
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
+                            isActive ? 'bg-blue-800 text-white' : 'bg-slate-100 text-slate-600'
+                          }`}
+                        >
+                          {item.count}
+                        </span>
+                      </div>
                     )}
                   </button>
                 );
@@ -836,6 +888,10 @@ export const AdminPage: React.FC = () => {
                       </h2>
                       <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-xs font-bold">
                         {inquiries.length} {inquiries.length === 1 ? 'Lead' : 'Leads'}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Real-Time Live Sync</span>
                       </span>
                     </div>
                     <p className="text-xs text-slate-500 mt-1">

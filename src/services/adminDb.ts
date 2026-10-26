@@ -676,10 +676,22 @@ class AdminDatabase {
     // then dispatch a storage event so any mounted UI (AdminPage) refreshes automatically.
     if (isFirebaseConfigured) {
       loadAllFromFirestore()
-        .then(({ applications, offers, internships, employees, certificates }) => {
+        .then(({ applications, offers, internships, employees, certificates, inquiries }) => {
           let changed = false;
+
+          if (inquiries && inquiries.length > 0) {
+            localStorage.setItem('itpl_inquiries', JSON.stringify(inquiries));
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('itpl_inquiries_updated'));
+            }
+            changed = true;
+          }
+
           if (applications !== null) {
             localStorage.setItem('itpl_admin_applications', JSON.stringify(applications));
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('itpl_applications_updated'));
+            }
             changed = true;
           }
 
@@ -1243,9 +1255,15 @@ class AdminDatabase {
       notes: app.notes || ['Applied via candidate portal'],
     };
     apps.unshift(newApp);
-    localStorage.setItem('itpl_admin_applications', JSON.stringify(apps));
+    try {
+      localStorage.setItem('itpl_admin_applications', JSON.stringify(apps));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('itpl_applications_updated'));
+      }
+    } catch (e) {}
+
     if (isFirebaseConfigured) {
-      createApplicationFirestore(newApp);
+      createApplicationFirestore(newApp).catch(() => {});
     }
     return newApp;
   }
@@ -1744,8 +1762,8 @@ class AdminDatabase {
       email: inquiry.email || '',
       phone: inquiry.phone || '',
       service: inquiry.service || 'IT Solutions & Consulting',
-      company: inquiry.company || '',
-      budget: inquiry.budget || '',
+      company: inquiry.company || 'N/A',
+      budget: inquiry.budget || '₹25k - ₹50k',
       message: inquiry.message || '',
       source: inquiry.source || 'Website Quote Form',
       status: inquiry.status || 'New',
@@ -1755,13 +1773,17 @@ class AdminDatabase {
     const updated = [newInquiry, ...existing.filter((i) => i.id !== id)];
     try {
       localStorage.setItem('itpl_inquiries', JSON.stringify(updated));
-      window.dispatchEvent(new CustomEvent('itpl_inquiries_updated'));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('itpl_inquiries_updated'));
+      }
     } catch (e) {
       console.warn('Could not save inquiry to localStorage', e);
     }
 
     if (isFirebaseConfigured) {
-      createInquiryFirestore(newInquiry).catch(() => {});
+      createInquiryFirestore(newInquiry).catch((err) => {
+        console.warn('createInquiryFirestore background error:', err);
+      });
     }
 
     return newInquiry;
@@ -1812,6 +1834,26 @@ class AdminDatabase {
     return () => {
       window.removeEventListener('storage', handleStorage);
       window.removeEventListener('itpl_inquiries_updated', handleCustom);
+    };
+  }
+
+  public subscribeToApplications(listener: () => void): () => void {
+    if (typeof window === 'undefined') return () => {};
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'itpl_admin_applications' || !e.key) {
+        listener();
+      }
+    };
+    const handleCustom = () => {
+      listener();
+    };
+
+    window.addEventListener('storage', handleStorage);
+    window.addEventListener('itpl_applications_updated', handleCustom);
+
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('itpl_applications_updated', handleCustom);
     };
   }
 }
