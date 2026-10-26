@@ -166,7 +166,7 @@ export default function App() {
       />
 
       {/* Multi-Page Routes with smooth page entrance transition */}
-      <main className="w-full pt-[92px] min-[380px]:pt-[100px] sm:pt-28 lg:pt-32 flex-1 overflow-x-clip print:p-0 print:m-0 print:overflow-visible print:block print:w-full">
+      <main className="w-full pt-[92px] min-[380px]:pt-[100px] sm:pt-28 md:pt-[116px] lg:pt-[124px] xl:pt-[130px] 2xl:pt-[136px] flex-1 overflow-x-clip print:p-0 print:m-0 print:overflow-visible print:block print:w-full">
         <div key={location.pathname} className="animate-page-enter w-full print:animate-none print:transform-none print:overflow-visible print:block print:w-full">
           <Routes>
           <Route

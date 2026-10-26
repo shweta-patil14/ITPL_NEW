@@ -17,14 +17,14 @@ export const Footer: React.FC = () => {
           {/* Column 1: Company Profile & Contacts */}
           <div>
             {/* Header: Exact Official Brand Logo */}
-            <div className="h-10 mb-3.5 flex items-center">
+            <div className="h-12 sm:h-14 mb-3.5 flex items-center">
               <Link
                 to="/"
-                className="inline-flex items-center gap-2.5 select-none group cursor-pointer"
+                className="inline-flex items-center gap-2.5 sm:gap-3 select-none group cursor-pointer"
                 aria-label="Infoyashonand Technology Home"
               >
                 {/* Emblem Icon */}
-                <div className="relative w-9 h-9 rounded-xl bg-white/5 border border-white/10 p-1 flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:border-cyan-400/40 transition-all shadow-md">
+                <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/5 border border-white/10 p-1 flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:border-cyan-400/40 transition-all shadow-md">
                   <img
                     src="/company-logo-clean.png"
                     alt="Infoyashonand Technology Logo"
@@ -33,24 +33,24 @@ export const Footer: React.FC = () => {
                 </div>
 
                 {/* Vertical White Divider Line */}
-                <div className="w-[2px] h-7 bg-gradient-to-b from-white/90 via-white/50 to-white/20 rounded-full shrink-0 shadow-xs mx-0.5" />
+                <div className="w-[2px] h-8 sm:h-10 bg-gradient-to-b from-white/90 via-white/50 to-white/20 rounded-full shrink-0 shadow-xs mx-0.5 sm:mx-1" />
 
                 {/* Dual-line Official Brand Typography */}
                 <div className="flex items-center min-w-0">
                   <svg
                     viewBox="0 0 670 170"
-                    className="w-auto h-[22px] min-[360px]:h-[26px] sm:h-[30px] shrink-0 select-none max-w-full"
+                    className="w-auto h-[26px] min-[360px]:h-[30px] sm:h-[36px] lg:h-[42px] shrink-0 select-none max-w-full"
                     style={{ overflow: 'visible' }}
                   >
                     <text
                       x="0"
                       y="90"
                       className="fill-white group-hover:fill-cyan-300 transition-colors duration-200"
-                      fontFamily="'Oswald', sans-serif"
+                      fontFamily="'Oswald', Arial, sans-serif"
                       fontWeight="700"
                       fontSize="102"
                       textLength="670"
-                      lengthAdjust="spacing"
+                      lengthAdjust="spacingAndGlyphs"
                     >
                       INFOYASHONAND
                     </text>
@@ -58,11 +58,11 @@ export const Footer: React.FC = () => {
                       x="0"
                       y="162"
                       className="fill-slate-300"
-                      fontFamily="'Oswald', sans-serif"
+                      fontFamily="'Oswald', Arial, sans-serif"
                       fontWeight="700"
                       fontSize="64"
                       textLength="670"
-                      lengthAdjust="spacing"
+                      lengthAdjust="spacingAndGlyphs"
                     >
                       TECHNOLOGY PVT. LTD.
                     </text>

@@ -89,41 +89,41 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onOpenApplyMod
           scrolled ? 'shadow-[0_6px_30px_rgba(0,17,58,0.7)]' : ''
         }`}
       >
-        <div className="w-full px-2.5 min-[360px]:px-3 min-[400px]:px-4 sm:px-6 lg:px-8 xl:px-10 h-16 min-[380px]:h-18 sm:h-20 lg:h-22 flex items-center justify-between gap-1.5 min-[380px]:gap-2 sm:gap-4 max-w-full">
+        <div className="w-full px-2.5 min-[360px]:px-3.5 min-[400px]:px-4 sm:px-6 lg:px-5 xl:px-8 2xl:px-10 h-16 min-[380px]:h-18 sm:h-20 md:h-[84px] lg:h-[90px] xl:h-[96px] 2xl:h-[102px] flex items-center justify-between gap-1.5 min-[380px]:gap-2 sm:gap-3 lg:gap-3.5 xl:gap-5 max-w-full">
           {/* Brand Logo & Typography */}
           <Link
             to="/"
-            className="flex items-center justify-start gap-1.5 min-[340px]:gap-2 min-[400px]:gap-2.5 sm:gap-3.5 cursor-pointer group min-w-0 select-none shrink"
+            className="flex items-center justify-start gap-1.5 min-[340px]:gap-2 min-[400px]:gap-2.5 sm:gap-3 lg:gap-3.5 cursor-pointer group shrink-0 select-none"
             aria-label="Infoyashonand Technology Home"
           >
             {/* Logo Emblem Icon - Borderless without circular frame */}
-            <div className="relative w-8 h-8 min-[340px]:w-9 min-[340px]:h-9 min-[380px]:w-10 min-[380px]:h-10 min-[440px]:w-12 min-[440px]:h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center group-hover:scale-105 transition-transform duration-200 shrink-0">
+            <div className="relative w-9 h-9 min-[340px]:w-10 min-[340px]:h-10 min-[380px]:w-11 min-[380px]:h-11 min-[440px]:w-12 min-[440px]:h-12 sm:w-15 sm:h-15 md:w-16 md:h-16 lg:w-[72px] lg:h-[72px] min-[1200px]:w-[78px] min-[1200px]:h-[78px] xl:w-[84px] xl:h-[84px] 2xl:w-[90px] 2xl:h-[90px] flex items-center justify-center group-hover:scale-105 transition-transform duration-200 shrink-0">
               <img
                 src="/company-logo-clean.png"
                 alt="Infoyashonand Technology Official Logo"
-                className="w-full h-full object-contain drop-shadow-sm"
+                className="w-full h-full object-contain drop-shadow-md"
               />
             </div>
 
             {/* Vertical White Divider Line */}
-            <div className="w-[1.5px] sm:w-[2px] h-6 min-[340px]:h-7 min-[380px]:h-8 min-[440px]:h-9 sm:h-10 bg-white/90 rounded-full shrink-0 shadow-xs mx-0.5 min-[380px]:mx-1" />
+            <div className="w-[1.5px] sm:w-[2px] lg:w-[2.5px] h-7 min-[340px]:h-8 min-[380px]:h-9 min-[440px]:h-10 sm:h-12 md:h-13 lg:h-14 xl:h-16 bg-white/90 rounded-full shrink-0 shadow-xs mx-1 min-[380px]:mx-1.5 sm:mx-2 lg:mx-2.5" />
 
             {/* Dual-line Vector Brand Text */}
-            <div className="flex items-center min-w-0 shrink">
+            <div className="flex items-center shrink-0 select-none">
               <svg
                 viewBox="0 0 670 170"
-                className="w-auto h-[18px] min-[340px]:h-[22px] min-[380px]:h-[26px] min-[440px]:h-[30px] sm:h-[38px] lg:h-[44px] max-w-full select-none"
+                className="w-auto h-[22px] min-[340px]:h-[25px] min-[380px]:h-[28px] min-[440px]:h-[32px] sm:h-[42px] md:h-[48px] lg:h-[56px] min-[1200px]:h-[62px] xl:h-[68px] 2xl:h-[74px] shrink-0 select-none"
                 style={{ overflow: 'visible' }}
               >
                 <text
                   x="0"
                   y="90"
                   className="fill-white group-hover:fill-amber-300 transition-colors duration-200"
-                  fontFamily="'Oswald', sans-serif"
+                  fontFamily="'Oswald', Arial, sans-serif"
                   fontWeight="700"
                   fontSize="102"
                   textLength="670"
-                  lengthAdjust="spacing"
+                  lengthAdjust="spacingAndGlyphs"
                 >
                   INFOYASHONAND
                 </text>
@@ -131,11 +131,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onOpenApplyMod
                   x="0"
                   y="162"
                   className="fill-white/95"
-                  fontFamily="'Oswald', sans-serif"
+                  fontFamily="'Oswald', Arial, sans-serif"
                   fontWeight="700"
                   fontSize="64"
                   textLength="670"
-                  lengthAdjust="spacing"
+                  lengthAdjust="spacingAndGlyphs"
                 >
                   TECHNOLOGY PVT. LTD.
                 </text>
@@ -144,10 +144,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onOpenApplyMod
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-0.5 min-[1120px]:gap-1 xl:gap-2">
+          <nav className="hidden lg:flex items-center gap-0.5 min-[1150px]:gap-1 min-[1260px]:gap-1.5 xl:gap-2 2xl:gap-2.5 shrink">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.href;
-              const linkClass = `px-2 min-[1120px]:px-2.5 xl:px-3.5 py-1.5 xl:py-2 rounded-full text-[12px] min-[1120px]:text-[13px] xl:text-[14px] font-semibold transition-all duration-200 whitespace-nowrap ${
+              const linkClass = `px-1.5 min-[1150px]:px-2 min-[1260px]:px-2.5 xl:px-3.5 py-1.5 xl:py-2 rounded-full text-[11.5px] min-[1150px]:text-[12.5px] min-[1260px]:text-[13px] xl:text-[14px] font-semibold transition-all duration-200 whitespace-nowrap ${
                 isActive
                   ? 'text-amber-300 bg-white/15 font-bold shadow-xs'
                   : 'text-slate-200 hover:text-white hover:bg-white/10'
@@ -195,7 +195,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onOpenApplyMod
             <button
               type="button"
               onClick={onOpenQuoteModal}
-              className="hidden min-[1180px]:inline-flex items-center gap-1.5 bg-[#EC1D24] hover:bg-[#d0151b] text-white font-bold text-xs xl:text-[13px] px-3 xl:px-4.5 py-2 xl:py-2.5 rounded-full shadow-md shadow-[#EC1D24]/30 hover:shadow-lg hover:shadow-[#EC1D24]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer whitespace-nowrap shrink-0"
+              className="hidden min-[1340px]:inline-flex items-center gap-1.5 bg-[#EC1D24] hover:bg-[#d0151b] text-white font-bold text-xs xl:text-[13px] px-3 xl:px-4.5 py-2 xl:py-2.5 rounded-full shadow-md shadow-[#EC1D24]/30 hover:shadow-lg hover:shadow-[#EC1D24]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer whitespace-nowrap shrink-0"
             >
               <span>Get Free Quote</span>
               <span className="material-symbols-outlined text-sm font-bold">arrow_forward</span>
@@ -230,13 +230,18 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onOpenApplyMod
           <div className="fixed top-0 right-0 w-[80%] max-w-[320px] h-full bg-[#00113a] text-white shadow-2xl flex flex-col z-50 overflow-y-auto border-l border-white/10">
             {/* Header */}
             <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-[#1b2685]">
-              <div className="flex items-center gap-2">
-                <div className="h-9 w-auto flex items-center justify-center">
-                  <img src="/company-logo-clean.png" alt="Logo" className="h-full w-auto object-contain" />
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                  <img src="/company-logo-clean.png" alt="Logo" className="w-full h-full object-contain drop-shadow-sm" />
                 </div>
-                <span className="font-bold text-sm tracking-wider uppercase text-amber-300">
-                  Infoyashonand
-                </span>
+                <div className="flex flex-col">
+                  <span className="font-bold text-sm tracking-wider uppercase text-amber-300 font-['Oswald']">
+                    INFOYASHONAND
+                  </span>
+                  <span className="text-[10px] text-white/90 font-medium tracking-wider uppercase font-['Oswald']">
+                    TECHNOLOGY PVT. LTD.
+                  </span>
+                </div>
               </div>
               <button
                 type="button"
