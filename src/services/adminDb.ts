@@ -23,6 +23,10 @@ import {
   deleteCertificateFirestore,
   loadAllFromFirestore,
   saveTestResultFirestore,
+  ContactInquiryFirestore,
+  createInquiryFirestore,
+  updateInquiryStatusFirestore,
+  deleteInquiryFirestore,
 } from '../firebase/firestoreService';
 import { isFirebaseConfigured } from '../firebase/config';
 import { teamService } from './teamService';
@@ -1714,6 +1718,101 @@ class AdminDatabase {
     } catch {
       return INITIAL_ATTENDANCE;
     }
+  }
+
+  // Client Quotes & Inquiries Management
+  public getInquiries(): ContactInquiryFirestore[] {
+    this.init();
+    try {
+      const data = localStorage.getItem('itpl_inquiries');
+      if (data) {
+        return JSON.parse(data);
+      }
+    } catch (e) {
+      console.warn('Could not read inquiries from localStorage', e);
+    }
+    return [];
+  }
+
+  public saveInquiry(inquiry: Partial<ContactInquiryFirestore>): ContactInquiryFirestore {
+    this.init();
+    const existing = this.getInquiries();
+    const id = inquiry.id || `inq-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`;
+    const newInquiry: ContactInquiryFirestore = {
+      id,
+      name: inquiry.name || 'Client Lead',
+      email: inquiry.email || '',
+      phone: inquiry.phone || '',
+      service: inquiry.service || 'IT Solutions & Consulting',
+      company: inquiry.company || '',
+      budget: inquiry.budget || '',
+      message: inquiry.message || '',
+      source: inquiry.source || 'Website Quote Form',
+      status: inquiry.status || 'New',
+      createdAt: new Date().toISOString(),
+    };
+
+    const updated = [newInquiry, ...existing.filter((i) => i.id !== id)];
+    try {
+      localStorage.setItem('itpl_inquiries', JSON.stringify(updated));
+      window.dispatchEvent(new CustomEvent('itpl_inquiries_updated'));
+    } catch (e) {
+      console.warn('Could not save inquiry to localStorage', e);
+    }
+
+    if (isFirebaseConfigured) {
+      createInquiryFirestore(newInquiry).catch(() => {});
+    }
+
+    return newInquiry;
+  }
+
+  public updateInquiryStatus(id: string, status: NonNullable<ContactInquiryFirestore['status']>): void {
+    const list = this.getInquiries();
+    const found = list.find((i) => i.id === id);
+    if (found) {
+      found.status = status;
+      try {
+        localStorage.setItem('itpl_inquiries', JSON.stringify(list));
+        window.dispatchEvent(new CustomEvent('itpl_inquiries_updated'));
+      } catch (e) {}
+
+      if (isFirebaseConfigured) {
+        updateInquiryStatusFirestore(id, status).catch(() => {});
+      }
+    }
+  }
+
+  public deleteInquiry(id: string): void {
+    const list = this.getInquiries().filter((i) => i.id !== id);
+    try {
+      localStorage.setItem('itpl_inquiries', JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('itpl_inquiries_updated'));
+    } catch (e) {}
+
+    if (isFirebaseConfigured) {
+      deleteInquiryFirestore(id).catch(() => {});
+    }
+  }
+
+  public subscribeToInquiries(listener: () => void): () => void {
+    if (typeof window === 'undefined') return () => {};
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'itpl_inquiries' || !e.key) {
+        listener();
+      }
+    };
+    const handleCustom = () => {
+      listener();
+    };
+
+    window.addEventListener('storage', handleStorage);
+    window.addEventListener('itpl_inquiries_updated', handleCustom);
+
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('itpl_inquiries_updated', handleCustom);
+    };
   }
 }
 

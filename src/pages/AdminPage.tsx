@@ -23,6 +23,8 @@ import {
   subscribeToCertificates,
   subscribeToInternships,
   subscribeToEmployees,
+  subscribeToInquiries,
+  ContactInquiryFirestore,
   saveAdminProfileFirestore,
   getAdminProfileFirestore,
 } from '../firebase/firestoreService';
@@ -92,10 +94,14 @@ export const AdminPage: React.FC = () => {
 
   // Active Tab
   const [activeTab, setActiveTab] = useState<
-    'applications' | 'offers' | 'certifications' | 'team' | 'company' | 'internships'
-  >('applications');
+    'quotes' | 'applications' | 'offers' | 'certifications' | 'team' | 'company' | 'internships'
+  >('quotes');
 
   // Database Data States
+  const [inquiries, setInquiries] = useState<ContactInquiryFirestore[]>(() => adminDb.getInquiries());
+  const [inquirySearch, setInquirySearch] = useState('');
+  const [inquiryStatusFilter, setInquiryStatusFilter] = useState<string>('all');
+  const [selectedInquiryForView, setSelectedInquiryForView] = useState<ContactInquiryFirestore | null>(null);
   const [applications, setApplications] = useState<ApplicationItem[]>([]);
   const [team, setTeam] = useState<EmployeeMember[]>([]);
   const [offers, setOffers] = useState<OfferLetterRecord[]>([]);
@@ -213,6 +219,7 @@ export const AdminPage: React.FC = () => {
   };
 
   const reloadData = () => {
+    setInquiries(adminDb.getInquiries());
     setApplications(adminDb.getApplications());
     setTeam(adminDb.getTeam());
     setOffers(adminDb.getOffers());
@@ -248,6 +255,17 @@ export const AdminPage: React.FC = () => {
     window.addEventListener('itpl_firestore_synced', handleFirestoreSynced);
 
     // Live real-time Firestore listeners
+    const unsubInquiries = subscribeToInquiries((cloudInquiries) => {
+      if (cloudInquiries && cloudInquiries.length > 0) {
+        setInquiries(cloudInquiries);
+        localStorage.setItem('itpl_inquiries', JSON.stringify(cloudInquiries));
+      }
+    });
+
+    const unsubLocalInquiries = adminDb.subscribeToInquiries(() => {
+      setInquiries(adminDb.getInquiries());
+    });
+
     const unsubApps = subscribeToApplications((cloudApps) => {
       if (cloudApps && cloudApps.length > 0) {
         setApplications(cloudApps);
@@ -285,6 +303,8 @@ export const AdminPage: React.FC = () => {
 
     return () => {
       window.removeEventListener('itpl_firestore_synced', handleFirestoreSynced);
+      if (unsubInquiries) unsubInquiries();
+      if (unsubLocalInquiries) unsubLocalInquiries();
       if (unsubApps) unsubApps();
       if (unsubOffers) unsubOffers();
       if (unsubCerts) unsubCerts();
@@ -461,6 +481,43 @@ export const AdminPage: React.FC = () => {
     showToast(`Certificate #${updatedCert.verificationId} for ${updatedCert.recipientName} updated successfully!`);
   };
 
+  // Inquiry actions
+  const handleInquiryStatusChange = (id: string, newStatus: any) => {
+    adminDb.updateInquiryStatus(id, newStatus);
+    setInquiries(adminDb.getInquiries());
+    showToast(`Lead status updated to ${newStatus}`);
+  };
+
+  const handleDeleteInquiry = (id: string, name: string) => {
+    if (window.confirm(`Are you sure you want to delete the quote/inquiry from "${name}"?`)) {
+      adminDb.deleteInquiry(id);
+      setInquiries(adminDb.getInquiries());
+      if (selectedInquiryForView?.id === id) {
+        setSelectedInquiryForView(null);
+      }
+      showToast('Inquiry deleted successfully.');
+    }
+  };
+
+  // Filtered inquiries
+  const filteredInquiries = inquiries.filter((inq) => {
+    const q = inquirySearch.toLowerCase().trim();
+    const matchSearch =
+      !q ||
+      inq.name.toLowerCase().includes(q) ||
+      (inq.company && inq.company.toLowerCase().includes(q)) ||
+      (inq.phone && inq.phone.toLowerCase().includes(q)) ||
+      (inq.email && inq.email.toLowerCase().includes(q)) ||
+      (inq.budget && inq.budget.toLowerCase().includes(q)) ||
+      (inq.message && inq.message.toLowerCase().includes(q)) ||
+      (inq.service && inq.service.toLowerCase().includes(q));
+
+    const matchStatus =
+      inquiryStatusFilter === 'all' || (inq.status || 'New') === inquiryStatusFilter;
+
+    return matchSearch && matchStatus;
+  });
+
   // Filtered applications
   const filteredApps = applications.filter((app) => {
     const q = appSearch.toLowerCase();
@@ -473,6 +530,7 @@ export const AdminPage: React.FC = () => {
 
   // Navigation Items according to Role
   const navItems = [
+    { id: 'quotes', label: 'Quotes & Inquiries', icon: 'request_quote', count: inquiries.length },
     { id: 'applications', label: 'Candidate ATS Pipeline', icon: 'assignment_ind', count: applications.length },
     { id: 'offers', label: 'Offer Letter Generator', icon: 'mail', count: offers.length },
     { id: 'certifications', label: 'Certification', icon: 'workspace_premium', count: certificates.length },
@@ -765,6 +823,288 @@ export const AdminPage: React.FC = () => {
                 </button>
               </div>
             </div>
+
+            {/* TAB 0: CLIENT QUOTES & INBOUND INQUIRIES */}
+            {activeTab === 'quotes' && (
+              <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 bg-white shadow-xs space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-blue-700 text-2xl">request_quote</span>
+                      <h2 className="text-xl font-bold text-slate-900">
+                        Client Quotes &amp; Inbound Inquiries
+                      </h2>
+                      <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-xs font-bold">
+                        {inquiries.length} {inquiries.length === 1 ? 'Lead' : 'Leads'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Real-time quote requests, client consultation leads, and project proposals submitted via the website modal.
+                    </p>
+                  </div>
+
+                  {/* Search and Filters */}
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <div className="relative w-full sm:w-64">
+                      <span className="material-symbols-outlined text-sm absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                        search
+                      </span>
+                      <input
+                        type="text"
+                        placeholder="Search lead, company, phone..."
+                        value={inquirySearch}
+                        onChange={(e) => setInquirySearch(e.target.value)}
+                        className="w-full pl-8 pr-3 py-1.5 rounded-xl text-xs border border-slate-300 bg-white text-slate-900 focus:outline-blue-600"
+                      />
+                    </div>
+                    <select
+                      value={inquiryStatusFilter}
+                      onChange={(e) => setInquiryStatusFilter(e.target.value)}
+                      className="px-3 py-1.5 rounded-xl text-xs border border-slate-300 bg-white text-slate-800 focus:outline-blue-600 cursor-pointer font-medium"
+                    >
+                      <option value="all">All Statuses ({inquiries.length})</option>
+                      <option value="New">New ({inquiries.filter((i) => (i.status || 'New') === 'New').length})</option>
+                      <option value="Contacted">Contacted ({inquiries.filter((i) => i.status === 'Contacted').length})</option>
+                      <option value="In Discussion">In Discussion ({inquiries.filter((i) => i.status === 'In Discussion').length})</option>
+                      <option value="Converted">Converted ({inquiries.filter((i) => i.status === 'Converted').length})</option>
+                      <option value="Closed">Closed ({inquiries.filter((i) => i.status === 'Closed').length})</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Quick Status KPI Summary */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200/60">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-blue-900 uppercase tracking-wider">New Leads</span>
+                      <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                    </div>
+                    <div className="text-2xl font-black text-blue-700 mt-1">
+                      {inquiries.filter((i) => (i.status || 'New') === 'New').length}
+                    </div>
+                    <span className="text-[10px] text-blue-600 font-medium">Pending HR Follow-up</span>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/60">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider">Contacted</span>
+                      <span className="material-symbols-outlined text-xs text-amber-600">call</span>
+                    </div>
+                    <div className="text-2xl font-black text-amber-700 mt-1">
+                      {inquiries.filter((i) => i.status === 'Contacted').length}
+                    </div>
+                    <span className="text-[10px] text-amber-600 font-medium">Outreach in progress</span>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-purple-50/70 border border-purple-200/60">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-purple-900 uppercase tracking-wider">In Discussion</span>
+                      <span className="material-symbols-outlined text-xs text-purple-600">forum</span>
+                    </div>
+                    <div className="text-2xl font-black text-purple-700 mt-1">
+                      {inquiries.filter((i) => i.status === 'In Discussion').length}
+                    </div>
+                    <span className="text-[10px] text-purple-600 font-medium">Requirements scoping</span>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/60">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-emerald-900 uppercase tracking-wider">Converted</span>
+                      <span className="material-symbols-outlined text-xs text-emerald-600">verified</span>
+                    </div>
+                    <div className="text-2xl font-black text-emerald-700 mt-1">
+                      {inquiries.filter((i) => i.status === 'Converted').length}
+                    </div>
+                    <span className="text-[10px] text-emerald-600 font-medium">Clients &amp; Enrolled</span>
+                  </div>
+                </div>
+
+                {filteredInquiries.length === 0 ? (
+                  <div className="text-center py-12 text-slate-400 space-y-2">
+                    <span className="material-symbols-outlined text-4xl text-slate-300">inbox</span>
+                    <p className="text-xs font-bold text-slate-500">No quote requests or inquiries match your filter</p>
+                    <p className="text-[11px] text-slate-400">
+                      When a candidate or client fills the "Request a Free IT Quote" modal, their details will automatically show up here.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
+                        <tr>
+                          <th className="p-3">Client / Candidate</th>
+                          <th className="p-3">Company / Org</th>
+                          <th className="p-3">Contact &amp; WhatsApp</th>
+                          <th className="p-3">Estimated Budget</th>
+                          <th className="p-3 min-w-[200px]">Project Requirement</th>
+                          <th className="p-3">Lead Status</th>
+                          <th className="p-3 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 text-slate-700">
+                        {filteredInquiries.map((inq) => {
+                          const phoneClean = (inq.phone || '').replace(/[^0-9]/g, '');
+                          const waPhone = phoneClean.length === 10 ? `91${phoneClean}` : phoneClean;
+                          const waMessage = encodeURIComponent(
+                            `Hello ${inq.name}, this is from Info Yashonand Technologies (ITPL). We received your IT Quote request for "${inq.company || inq.service || 'Software Development'}". How can we assist you with your project?`
+                          );
+                          const waUrl = `https://wa.me/${waPhone}?text=${waMessage}`;
+
+                          const statusColors: Record<string, string> = {
+                            New: 'bg-blue-50 text-blue-700 border-blue-200',
+                            Contacted: 'bg-amber-50 text-amber-700 border-amber-200',
+                            'In Discussion': 'bg-purple-50 text-purple-700 border-purple-200',
+                            Converted: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                            Closed: 'bg-slate-100 text-slate-600 border-slate-200',
+                          };
+
+                          return (
+                            <tr key={inq.id || Math.random()} className="hover:bg-slate-50/80 transition-colors">
+                              {/* Client / Candidate */}
+                              <td className="p-3">
+                                <div className="font-bold text-slate-900 text-sm">{inq.name}</div>
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                  <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                                    {inq.source || 'Quote Modal'}
+                                  </span>
+                                  {inq.createdAt && (
+                                    <span className="text-[10px] text-slate-400">
+                                      {typeof inq.createdAt === 'string'
+                                        ? new Date(inq.createdAt).toLocaleDateString('en-IN', {
+                                            day: 'numeric',
+                                            month: 'short',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                          })
+                                        : inq.createdAt?.seconds
+                                        ? new Date(inq.createdAt.seconds * 1000).toLocaleDateString('en-IN', {
+                                            day: 'numeric',
+                                            month: 'short',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                          })
+                                        : ''}
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+
+                              {/* Company */}
+                              <td className="p-3">
+                                <div className="font-semibold text-slate-800">
+                                  {inq.company || <span className="text-slate-400 italic">Individual / Candidate</span>}
+                                </div>
+                                {inq.service && (
+                                  <div className="text-[10px] text-blue-600 font-medium">{inq.service}</div>
+                                )}
+                              </td>
+
+                              {/* Contact & WhatsApp */}
+                              <td className="p-3">
+                                <div className="space-y-1">
+                                  <a
+                                    href={`tel:${inq.phone}`}
+                                    className="font-mono text-slate-900 hover:text-blue-700 font-bold block"
+                                  >
+                                    {inq.phone}
+                                  </a>
+                                  {inq.email && (
+                                    <a
+                                      href={`mailto:${inq.email}`}
+                                      className="text-[11px] text-slate-500 hover:text-blue-600 block truncate max-w-[160px]"
+                                    >
+                                      {inq.email}
+                                    </a>
+                                  )}
+                                  <a
+                                    href={waUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200 transition-colors"
+                                  >
+                                    <span className="material-symbols-outlined text-[12px] text-emerald-600">chat</span>
+                                    <span>WhatsApp</span>
+                                  </a>
+                                </div>
+                              </td>
+
+                              {/* Estimated Budget */}
+                              <td className="p-3">
+                                <span className="inline-block px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                  {inq.budget || '₹25k - ₹50k'}
+                                </span>
+                              </td>
+
+                              {/* Project Requirement */}
+                              <td className="p-3">
+                                <div
+                                  className="text-xs text-slate-600 max-w-xs line-clamp-2 hover:line-clamp-none cursor-pointer"
+                                  title="Click to view full message"
+                                  onClick={() => setSelectedInquiryForView(inq)}
+                                >
+                                  {inq.message || <span className="italic text-slate-400">No project description</span>}
+                                </div>
+                              </td>
+
+                              {/* Lead Status */}
+                              <td className="p-3">
+                                <select
+                                  value={inq.status || 'New'}
+                                  onChange={(e) => inq.id && handleInquiryStatusChange(inq.id, e.target.value)}
+                                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border cursor-pointer focus:outline-blue-600 ${
+                                    statusColors[inq.status || 'New'] || 'bg-slate-100 text-slate-700 border-slate-200'
+                                  }`}
+                                >
+                                  <option value="New">1. New</option>
+                                  <option value="Contacted">2. Contacted</option>
+                                  <option value="In Discussion">3. In Discussion</option>
+                                  <option value="Converted">4. Converted</option>
+                                  <option value="Closed">5. Closed</option>
+                                </select>
+                              </td>
+
+                              {/* Actions */}
+                              <td className="p-3 text-right">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedInquiryForView(inq)}
+                                    className="p-1.5 rounded-lg text-slate-600 hover:text-blue-700 hover:bg-blue-50 transition-colors cursor-pointer"
+                                    title="View Full Details"
+                                  >
+                                    <span className="material-symbols-outlined text-sm">visibility</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setActiveTab('applications');
+                                      setAppSearch(inq.name);
+                                      showToast(`Viewing ATS record for ${inq.name}`);
+                                    }}
+                                    className="p-1.5 rounded-lg text-slate-600 hover:text-purple-700 hover:bg-purple-50 transition-colors cursor-pointer"
+                                    title="View in ATS Pipeline"
+                                  >
+                                    <span className="material-symbols-outlined text-sm">assignment_ind</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => inq.id && handleDeleteInquiry(inq.id, inq.name)}
+                                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                                    title="Delete Lead"
+                                  >
+                                    <span className="material-symbols-outlined text-sm">delete</span>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* TAB 1: APPLICATIONS (CANDIDATE ATS PIPELINE) */}
             {activeTab === 'applications' && (
@@ -1627,6 +1967,89 @@ export const AdminPage: React.FC = () => {
         onSave={handleSaveProfile}
         userRole={userRole}
       />
+
+      {/* ======================================================= */}
+      {/* MODAL: VIEW FULL INQUIRY / QUOTE DETAILS */}
+      {/* ======================================================= */}
+      {selectedInquiryForView && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-5">
+            <div className="flex items-start justify-between pb-3 border-b border-slate-100">
+              <div>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200">
+                  {selectedInquiryForView.source || 'Free Quote Request'}
+                </span>
+                <h3 className="text-lg font-black text-slate-900 mt-1">
+                  {selectedInquiryForView.name}
+                </h3>
+                <p className="text-xs text-slate-500">
+                  {selectedInquiryForView.company ? `Company: ${selectedInquiryForView.company}` : 'Individual / Candidate Lead'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedInquiryForView(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                <span className="text-[10px] font-bold text-slate-400 uppercase block mb-0.5">Phone Number</span>
+                <a href={`tel:${selectedInquiryForView.phone}`} className="font-mono font-bold text-slate-800 hover:text-blue-700">
+                  {selectedInquiryForView.phone}
+                </a>
+              </div>
+              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                <span className="text-[10px] font-bold text-slate-400 uppercase block mb-0.5">Estimated Budget</span>
+                <span className="font-bold text-indigo-700">
+                  {selectedInquiryForView.budget || '₹25k - ₹50k'}
+                </span>
+              </div>
+              {selectedInquiryForView.email && (
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 col-span-2">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase block mb-0.5">Email Address</span>
+                  <a href={`mailto:${selectedInquiryForView.email}`} className="font-mono font-medium text-slate-800 hover:text-blue-700">
+                    {selectedInquiryForView.email}
+                  </a>
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 rounded-2xl bg-blue-50/50 border border-blue-100 text-xs">
+              <span className="text-[10px] font-bold text-blue-900 uppercase tracking-wider block mb-1">
+                Project Summary &amp; Requirements:
+              </span>
+              <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">
+                {selectedInquiryForView.message || 'No project description was provided.'}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 pt-2">
+              <a
+                href={`https://wa.me/${(selectedInquiryForView.phone || '').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+                  `Hello ${selectedInquiryForView.name}, this is from Info Yashonand Technologies (ITPL). Regarding your quote request for ${selectedInquiryForView.company || 'your project'}...`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-sm">chat</span>
+                <span>Open in WhatsApp</span>
+              </a>
+              <a
+                href={`tel:${selectedInquiryForView.phone}`}
+                className="px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-sm">call</span>
+                <span>Call Client</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

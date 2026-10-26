@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { createInquiryFirestore } from '../firebase/firestoreService';
+import { adminDb } from '../services/adminDb';
 
 interface EnquiryModalProps {
   isOpen: boolean;
@@ -54,29 +54,31 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      // 1. Save to Cloud Firestore
-      await createInquiryFirestore({
+      // 1. Save to Admin DB (Dual Firestore + LocalStorage with real-time events)
+      adminDb.saveInquiry({
         name: formData.name.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         service: formData.service,
         message: formData.message.trim(),
-        source: 'Auto Popup Enquiry Form (2-Min Timer)',
+        source: 'Auto Popup Enquiry Form',
+        status: 'New',
       });
 
-      // 2. Cache locally
-      try {
-        const stored = localStorage.getItem('itpl_enquiries');
-        const list = stored ? JSON.parse(stored) : [];
-        list.unshift({
-          ...formData,
-          id: `inq-${Date.now()}`,
-          submittedAt: new Date().toISOString(),
-        });
-        localStorage.setItem('itpl_enquiries', JSON.stringify(list));
-      } catch {
-        // ignore storage errors
-      }
+      // 2. Also register in HR Admin ATS pipeline
+      adminDb.createApplication({
+        candidateName: formData.name.trim(),
+        candidateEmail: formData.email.trim(),
+        candidatePhone: formData.phone.trim(),
+        jobTitle: `Enquiry: ${formData.service}`,
+        department: 'Consulting & Inquiries',
+        stage: 'submitted',
+        notes: [
+          `Enquiry Form submitted via website popup`,
+          `Service: ${formData.service}`,
+          `Message: ${formData.message.trim() || 'N/A'}`,
+        ],
+      });
 
       // 3. Mark handled in session so it never pops up again in same session
       sessionStorage.setItem('itpl_enquiry_handled', 'true');

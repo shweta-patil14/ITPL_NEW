@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createInquiryFirestore } from '../firebase/firestoreService';
+import { adminDb } from '../services/adminDb';
 
 interface ContactSectionProps {
   selectedService: string;
@@ -37,14 +37,30 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
       return;
     }
 
-    // Save inquiry to Firestore in real time
-    createInquiryFirestore({
+    // Save inquiry to Admin DB in real time (Dual Firestore + LocalStorage)
+    adminDb.saveInquiry({
       name: formData.name.trim(),
       email: formData.email.trim(),
       phone: formData.phone.trim(),
       service: formData.service,
       message: formData.message.trim(),
       source: 'Contact Form',
+      status: 'New',
+    });
+
+    // Also register in Candidate ATS Pipeline
+    adminDb.createApplication({
+      candidateName: formData.name.trim(),
+      candidateEmail: formData.email.trim(),
+      candidatePhone: formData.phone.trim(),
+      jobTitle: `Consultation: ${formData.service}`,
+      department: 'Client Inquiries',
+      stage: 'submitted',
+      notes: [
+        `Contact Form inquiry received via website`,
+        `Selected Service: ${formData.service}`,
+        `Message: ${formData.message.trim() || 'N/A'}`,
+      ],
     });
 
     onFormSubmitSuccess(

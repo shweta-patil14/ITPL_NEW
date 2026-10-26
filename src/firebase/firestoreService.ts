@@ -646,12 +646,16 @@ export function subscribeToEmployees(
 export interface ContactInquiryFirestore {
   id?: string;
   name: string;
-  email: string;
+  email?: string;
   phone: string;
-  service: string;
+  service?: string;
+  company?: string;
+  budget?: string;
   message?: string;
   source?: string;
+  status?: 'New' | 'Contacted' | 'In Discussion' | 'Converted' | 'Closed';
   createdAt?: any;
+  updatedAt?: any;
 }
 
 export async function createInquiryFirestore(inquiry: ContactInquiryFirestore): Promise<boolean> {
@@ -662,12 +666,46 @@ export async function createInquiryFirestore(inquiry: ContactInquiryFirestore): 
     await setDoc(docRef, {
       ...inquiry,
       id: inquiryId,
+      status: inquiry.status || 'New',
       createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
     console.log('✅ [Firestore] Inquiry recorded:', inquiryId);
     return true;
   } catch (error) {
     console.error('🔥 [Firestore] Error saving inquiry:', error);
+    return false;
+  }
+}
+
+export async function updateInquiryStatusFirestore(
+  id: string,
+  status: ContactInquiryFirestore['status']
+): Promise<boolean> {
+  if (!isReady()) return false;
+  try {
+    const docRef = doc(db!, COLLECTIONS.INQUIRIES, id);
+    await updateDoc(docRef, {
+      status,
+      updatedAt: serverTimestamp(),
+    });
+    console.log('✅ [Firestore] Inquiry status updated:', id, '->', status);
+    return true;
+  } catch (error) {
+    console.error('🔥 [Firestore] Error updating inquiry status:', error);
+    return false;
+  }
+}
+
+export async function deleteInquiryFirestore(id: string): Promise<boolean> {
+  if (!isReady()) return false;
+  try {
+    const docRef = doc(db!, COLLECTIONS.INQUIRIES, id);
+    await deleteDoc(docRef);
+    console.log('✅ [Firestore] Inquiry deleted:', id);
+    return true;
+  } catch (error) {
+    console.error('🔥 [Firestore] Error deleting inquiry:', error);
     return false;
   }
 }
@@ -685,6 +723,37 @@ export async function getInquiriesFirestore(): Promise<ContactInquiryFirestore[]
     return results;
   } catch (error) {
     console.error('🔥 [Firestore] Error getting inquiries:', error);
+    return null;
+  }
+}
+
+export function subscribeToInquiries(
+  onUpdate: (inquiries: ContactInquiryFirestore[]) => void
+): Unsubscribe | null {
+  if (!isReady()) return null;
+  try {
+    const colRef = collection(db!, COLLECTIONS.INQUIRIES);
+    return onSnapshot(
+      colRef,
+      (snapshot) => {
+        const list: ContactInquiryFirestore[] = [];
+        snapshot.forEach((d) => {
+          list.push(d.data() as ContactInquiryFirestore);
+        });
+        // Sort newest first
+        list.sort((a, b) => {
+          const tA = (a as any).createdAt?.seconds ? (a as any).createdAt.seconds * 1000 : new Date((a as any).createdAt || 0).getTime();
+          const tB = (b as any).createdAt?.seconds ? (b as any).createdAt.seconds * 1000 : new Date((b as any).createdAt || 0).getTime();
+          return tB - tA;
+        });
+        onUpdate(list);
+      },
+      (error) => {
+        console.warn('⚠️ [Firestore] Real-time inquiries listener error:', error);
+      }
+    );
+  } catch (e) {
+    console.warn('⚠️ [Firestore] subscribeToInquiries failed:', e);
     return null;
   }
 }

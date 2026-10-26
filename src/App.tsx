@@ -28,6 +28,7 @@ import { AdminPage } from './pages/AdminPage';
 import { BonafideCertificatePage } from './pages/BonafideCertificatePage';
 import { OfferLetterPage } from './pages/OfferLetterPage';
 import { VerifyCertificatePage } from './pages/VerifyCertificatePage';
+import { adminDb } from './services/adminDb';
 
 import { CourseItem, ProjectItem, ToastMessage } from './types';
 
@@ -40,6 +41,70 @@ export default function App() {
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState<boolean>(false);
   const [selectedCourseForModal, setSelectedCourseForModal] = useState<CourseItem | null>(null);
   const [selectedProjectForModal, setSelectedProjectForModal] = useState<ProjectItem | null>(null);
+
+  // Quote Modal Form States
+  const [quoteName, setQuoteName] = useState('');
+  const [quoteCompany, setQuoteCompany] = useState('');
+  const [quotePhone, setQuotePhone] = useState('');
+  const [quoteBudget, setQuoteBudget] = useState('₹25k - ₹50k');
+  const [quoteSummary, setQuoteSummary] = useState('');
+  const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
+
+  const handleQuoteSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quoteName.trim() || !quotePhone.trim()) {
+      triggerToast('Please provide your name and phone number', 'error');
+      return;
+    }
+
+    setIsSubmittingQuote(true);
+    try {
+      // 1. Record inquiry lead in admin database (synced to Firestore & localStorage)
+      adminDb.saveInquiry({
+        name: quoteName.trim(),
+        phone: quotePhone.trim(),
+        company: quoteCompany.trim() || 'N/A',
+        budget: quoteBudget,
+        service: `IT Quote Request (${quoteBudget})`,
+        message: quoteSummary.trim() || 'Free IT quote requested via website modal',
+        source: 'Request a Free IT Quote Modal',
+        status: 'New',
+      });
+
+      // 2. Automatically register into HR Admin ATS Applications Pipeline as well
+      adminDb.createApplication({
+        candidateName: quoteName.trim(),
+        candidatePhone: quotePhone.trim(),
+        candidateEmail: quoteCompany.trim()
+          ? `${quoteCompany.trim().toLowerCase().replace(/[^a-z0-9]/g, '')}@quote.itpl`
+          : `lead-${Date.now().toString().slice(-4)}@infoyashonand.com`,
+        jobTitle: `Free IT Quote: ${quoteCompany.trim() || 'Client Project'} (${quoteBudget})`,
+        department: 'IT Consulting & Solutions',
+        stage: 'submitted',
+        notes: [
+          `Inbound Free IT Quote Request submitted via Website Modal`,
+          `Estimated Budget: ${quoteBudget}`,
+          `Company / Organization: ${quoteCompany.trim() || 'N/A'}`,
+          `Phone: ${quotePhone.trim()}`,
+          `Project Summary: ${quoteSummary.trim() || 'No project description provided'}`,
+        ],
+      });
+
+      triggerToast('Quote request submitted successfully! An IT architect will respond within 2 hours.');
+      setQuoteName('');
+      setQuoteCompany('');
+      setQuotePhone('');
+      setQuoteBudget('₹25k - ₹50k');
+      setQuoteSummary('');
+      setIsQuoteModalOpen(false);
+    } catch (err) {
+      console.error('Error submitting quote:', err);
+      triggerToast('Quote submitted! Our team will contact you shortly.');
+      setIsQuoteModalOpen(false);
+    } finally {
+      setIsSubmittingQuote(false);
+    }
+  };
 
   // Automatic Enquiry Form trigger after 15 seconds (15,000 ms)
   useEffect(() => {
@@ -168,19 +233,14 @@ export default function App() {
         title="Request a Free IT Quote"
         onClose={() => setIsQuoteModalOpen(false)}
       >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setIsQuoteModalOpen(false);
-            triggerToast('Quote request submitted! An IT architect will respond within 2 hours.');
-          }}
-          className="space-y-4"
-        >
+        <form onSubmit={handleQuoteSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">Full Name *</label>
             <input
               required
               type="text"
+              value={quoteName}
+              onChange={(e) => setQuoteName(e.target.value)}
               placeholder="e.g. Rahul Sharma"
               className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-[#131B2E] focus:outline-none focus:border-[#232884] focus:bg-white"
             />
@@ -189,6 +249,8 @@ export default function App() {
             <label className="block text-xs font-bold text-slate-700 mb-1">Company / Organization</label>
             <input
               type="text"
+              value={quoteCompany}
+              onChange={(e) => setQuoteCompany(e.target.value)}
               placeholder="Your Business or Startup Name"
               className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-[#131B2E] focus:outline-none focus:border-[#232884] focus:bg-white"
             />
@@ -199,17 +261,23 @@ export default function App() {
               <input
                 required
                 type="tel"
+                value={quotePhone}
+                onChange={(e) => setQuotePhone(e.target.value)}
                 placeholder="+91 8055514368"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-[#131B2E] focus:outline-none focus:border-[#232884] focus:bg-white"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">Estimated Budget</label>
-              <select className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-700 focus:outline-none focus:border-[#232884] focus:bg-white">
-                <option>₹25k - ₹50k</option>
-                <option>₹50k - ₹1.5 Lakh</option>
-                <option>₹1.5 Lakh - ₹5 Lakh</option>
-                <option>₹5 Lakh+</option>
+              <select
+                value={quoteBudget}
+                onChange={(e) => setQuoteBudget(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-700 focus:outline-none focus:border-[#232884] focus:bg-white cursor-pointer"
+              >
+                <option value="₹25k - ₹50k">₹25k - ₹50k</option>
+                <option value="₹50k - ₹1.5 Lakh">₹50k - ₹1.5 Lakh</option>
+                <option value="₹1.5 Lakh - ₹5 Lakh">₹1.5 Lakh - ₹5 Lakh</option>
+                <option value="₹5 Lakh+">₹5 Lakh+</option>
               </select>
             </div>
           </div>
@@ -217,15 +285,18 @@ export default function App() {
             <label className="block text-xs font-bold text-slate-700 mb-1">Project Summary</label>
             <textarea
               rows={3}
+              value={quoteSummary}
+              onChange={(e) => setQuoteSummary(e.target.value)}
               placeholder="Explain requirements (web, app, enterprise software, marketing, cloud)..."
               className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-[#131B2E] focus:outline-none focus:border-[#232884] focus:bg-white"
             ></textarea>
           </div>
           <button
             type="submit"
-            className="btn-glow w-full py-3 rounded-xl bg-[#232884] text-white text-xs sm:text-sm font-bold hover:bg-[#141759] shadow-md transition-all cursor-pointer"
+            disabled={isSubmittingQuote}
+            className="btn-glow w-full py-3 rounded-xl bg-[#232884] text-white text-xs sm:text-sm font-bold hover:bg-[#141759] shadow-md transition-all cursor-pointer disabled:opacity-50"
           >
-            Submit Free Quote Request
+            {isSubmittingQuote ? 'Submitting Request...' : 'Submit Free Quote Request'}
           </button>
         </form>
       </Modal>
