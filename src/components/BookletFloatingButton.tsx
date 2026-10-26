@@ -56,11 +56,7 @@ export const BookletFloatingButton: React.FC<BookletFloatingButtonProps> = ({ on
 
   return (
     <div
-      className={`booklet-corner-button group fixed ${
-        location.pathname.startsWith('/training')
-          ? 'bottom-20 right-4 sm:bottom-8 sm:right-8'
-          : 'bottom-6 right-4 sm:bottom-8 sm:right-8'
-      } z-40 transition-all duration-300 pointer-events-auto`}
+      className="booklet-corner-button group fixed bottom-6 right-6 z-40 sm:bottom-8 sm:right-8 transition-all duration-300 pointer-events-auto"
       style={{ willChange: 'transform' }}
     >
       {/* Outer Halo Pulsing Ring */}
