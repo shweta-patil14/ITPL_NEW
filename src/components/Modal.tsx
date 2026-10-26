@@ -25,13 +25,13 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, title, onClose, children }
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-opacity">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-900/60 backdrop-blur-md transition-opacity">
       <div
         className="fixed inset-0"
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-[#232884]/20 p-6 sm:p-8 overflow-hidden max-h-[90vh] overflow-y-auto z-10">
+      <div className="relative w-full max-w-lg bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#232884]/20 p-4 sm:p-6 md:p-8 overflow-hidden max-h-[92dvh] overflow-y-auto z-10">
         <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
           <h3 className="text-lg sm:text-xl font-extrabold text-[#0E1538] flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-[#232884]"></span>

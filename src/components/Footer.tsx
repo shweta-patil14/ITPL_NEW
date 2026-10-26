@@ -13,7 +13,7 @@ export const Footer: React.FC = () => {
       <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-[1.35fr_0.9fr_1fr_1.1fr_1.25fr] gap-6 lg:gap-7 xl:gap-8 mb-8 text-slate-300 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.35fr_0.9fr_1fr_1.1fr_1.25fr] gap-6 lg:gap-7 xl:gap-8 mb-8 text-slate-300 items-start">
           {/* Column 1: Company Profile & Contacts */}
           <div>
             {/* Header: Exact Official Brand Logo */}

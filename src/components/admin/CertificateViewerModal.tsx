@@ -1025,7 +1025,7 @@ export const CertificateViewerModal: React.FC<CertificateViewerModalProps> = ({
                   <img
                     src="/company-logo-clean.png"
                     alt="Infoyashonand Technology Watermark"
-                    className="w-[360px] sm:w-[440px] h-auto object-contain filter grayscale"
+                    className="w-[360px] sm:w-[440px] max-w-full h-auto object-contain filter grayscale"
                   />
                 </div>
               )}

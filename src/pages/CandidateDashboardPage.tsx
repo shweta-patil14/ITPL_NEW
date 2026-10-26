@@ -1111,7 +1111,7 @@ export const CandidateDashboardPage: React.FC = () => {
             </div>
 
             {/* Assessment stats grid in popup */}
-            <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left">
+            <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-2 sm:gap-3 p-3 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left">
               <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
                 <span className="block text-[11px] font-bold text-slate-500 uppercase">Total MCQs</span>
                 <span className="text-lg font-black text-[#0E1538]">{APTITUDE_QUESTIONS.length}</span>

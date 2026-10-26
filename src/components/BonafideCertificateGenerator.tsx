@@ -479,7 +479,7 @@ export const BonafideCertificateGenerator: React.FC = () => {
               <img
                 src="/company-logo-clean.png"
                 alt="Infoyashonand Technology Watermark"
-                className="w-[340px] sm:w-[420px] h-auto object-contain filter grayscale"
+                className="w-[340px] sm:w-[420px] max-w-full h-auto object-contain filter grayscale"
               />
             </div>
 

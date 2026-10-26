@@ -306,7 +306,7 @@ export const VerifyCertificatePage: React.FC = () => {
                 <img
                   src="/company-logo-clean.png"
                   alt="Infoyashonand Technology Watermark"
-                  className="w-[380px] sm:w-[460px] h-auto object-contain filter grayscale"
+                  className="w-[380px] sm:w-[460px] max-w-full h-auto object-contain filter grayscale"
                 />
               </div>
 

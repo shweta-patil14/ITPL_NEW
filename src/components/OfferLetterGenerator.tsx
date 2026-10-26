@@ -965,7 +965,7 @@ export const OfferLetterGenerator: React.FC = () => {
                   <img
                     src="/company-logo-clean.png"
                     alt="ITPL Watermark"
-                    className="w-[360px] sm:w-[440px] h-auto object-contain filter grayscale"
+                    className="w-[360px] sm:w-[440px] max-w-full h-auto object-contain filter grayscale"
                   />
                 </div>
               )}
@@ -1123,7 +1123,7 @@ export const OfferLetterGenerator: React.FC = () => {
                   <img
                     src="/company-logo-clean.png"
                     alt="ITPL Watermark"
-                    className="w-[360px] sm:w-[440px] h-auto object-contain filter grayscale"
+                    className="w-[360px] sm:w-[440px] max-w-full h-auto object-contain filter grayscale"
                   />
                 </div>
               )}

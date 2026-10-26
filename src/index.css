@@ -10,6 +10,17 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  img, picture, video, canvas {
+    max-width: 100%;
+  }
+
+  /* Ensure touch targets have accessible min heights on touch devices */
+  button, input, select, textarea {
+    touch-action: manipulation;
   }
 }
 

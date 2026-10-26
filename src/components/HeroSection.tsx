@@ -72,7 +72,7 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
         >
           <h1
             style={{ fontFamily: "'Montserrat', 'Poppins', sans-serif" }}
-            className="text-3xl sm:text-5xl lg:text-7xl font-black text-white tracking-tight leading-[1.15] mb-4 sm:mb-6 drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]"
+            className="text-2xl min-[360px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white tracking-tight leading-[1.15] mb-4 sm:mb-6 drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]"
           >
             BUILDING NEXT-GEN SOFTWARE.{' '}
             <span
@@ -92,7 +92,7 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
               : 'opacity-0 translate-y-12 filter blur-sm pointer-events-none'
           }`}
         >
-          <p className="text-sm sm:text-lg lg:text-2xl text-slate-100 font-semibold max-w-3xl leading-relaxed drop-shadow-[0_3px_14px_rgba(0,0,0,0.9)]">
+          <p className="text-xs min-[360px]:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-slate-100 font-semibold max-w-3xl leading-relaxed drop-shadow-[0_3px_14px_rgba(0,0,0,0.9)]">
             Partner with Sangli’s premier IT firm for scalable enterprise solutions, or join our ISO-certified academy to become a job-ready developer with 100% placement support.
           </p>
         </div>

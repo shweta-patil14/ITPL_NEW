@@ -114,7 +114,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-md animate-enquiry-backdrop"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/70 backdrop-blur-md animate-enquiry-backdrop"
       role="dialog"
       aria-modal="true"
       aria-labelledby="enquiry-modal-title"
@@ -127,7 +127,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
       />
 
       {/* Modal Card with real-time glow & animated entrance on Desktop & Mobile */}
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-indigo-100/90 p-5 sm:p-7 overflow-hidden max-h-[92dvh] overflow-y-auto z-10 animate-enquiry-modal">
+      <div className="relative w-full max-w-lg bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-indigo-100/90 p-4 sm:p-6 md:p-7 overflow-hidden max-h-[92dvh] overflow-y-auto z-10 animate-enquiry-modal">
         {/* Real-time Flowing Top Gradient Accent */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-[#3D48C8] via-emerald-400 to-[#232884] animate-enquiry-flow" />
 

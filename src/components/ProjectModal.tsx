@@ -16,11 +16,11 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 sm:p-8 text-left"
+        className="relative w-full max-w-3xl max-h-[92dvh] overflow-y-auto bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-2xl p-4 sm:p-6 md:p-8 text-left"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Decorative corner stitch markers */}

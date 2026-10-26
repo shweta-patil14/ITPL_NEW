@@ -395,7 +395,7 @@ export const TrainingPage: React.FC<TrainingPageProps> = () => {
             </div>
 
             {/* Stats Badges */}
-            <div className="pt-4 flex flex-row items-center justify-center gap-1.5 sm:gap-3 border-t border-white/20 w-full max-w-2xl">
+            <div className="pt-4 flex flex-wrap items-center justify-center gap-1.5 sm:gap-3 border-t border-white/20 w-full max-w-2xl">
               <div className="inline-flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-1 sm:py-2 rounded-lg sm:rounded-xl bg-black/50 border border-white/20 backdrop-blur-md text-[10px] sm:text-[13px] text-white shadow-md whitespace-nowrap shrink-0 hover:border-amber-400/50 transition-colors">
                 <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 <span><strong>100%</strong> Practical</span>
