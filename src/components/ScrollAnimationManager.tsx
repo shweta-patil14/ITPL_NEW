@@ -49,13 +49,7 @@ export const ScrollAnimationManager: React.FC = () => {
       );
 
       targets.forEach((el) => {
-        // If already in viewport on load, reveal immediately
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 30) {
-          el.classList.add('is-revealed');
-        } else {
-          observer.observe(el);
-        }
+        observer.observe(el);
       });
 
       return observer;

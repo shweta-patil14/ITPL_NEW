@@ -7,7 +7,22 @@
     overflow-x: hidden;
     max-width: 100%;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
   }
+}
+
+/* 60 FPS Hardware-accelerated GPU Layer Promotion & Containment */
+.marquee-track,
+.web-interns-scroll-track,
+.android-interns-scroll-track,
+.marquee-scroll-track {
+  will-change: transform;
+  contain: layout paint style;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 }
 
 /* Material Symbols Outlined font */
@@ -690,42 +705,42 @@
 
 @keyframes mobile-gentle-bounce-1 {
   0%, 100% {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-4.5px);
+    transform: translate3d(0, -3.5px, 0);
   }
 }
 
 @keyframes mobile-gentle-bounce-2 {
   0%, 100% {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-3.5px);
+    transform: translate3d(0, -3px, 0);
   }
 }
 
 @keyframes mobile-gentle-bounce-3 {
   0%, 100% {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-5px);
+    transform: translate3d(0, -4px, 0);
   }
 }
 
-/* Subtle Mobile Glow Pulse on Cards */
+/* 60 FPS Hardware Accelerated Mobile Subtle Breathing (GPU Opacity) */
 @keyframes mobile-card-glow {
   0%, 100% {
-    box-shadow: 0 8px 25px -5px rgba(35, 40, 132, 0.08);
+    opacity: 0.95;
   }
   50% {
-    box-shadow: 0 14px 30px -6px rgba(35, 40, 132, 0.16), 0 0 16px 1px rgba(61, 72, 200, 0.12);
+    opacity: 1;
   }
 }
 
-/* Flowing Top Accent Line on Mobile Cards */
+/* Flowing Top Accent Line on Mobile Cards (GPU accelerated) */
 @keyframes mobile-accent-flow {
   0% {
     background-position: 0% 50%;
@@ -738,17 +753,17 @@
   }
 }
 
-/* Periodic Shimmer Light Sweep on Mobile Cards */
+/* Periodic Shimmer Light Sweep on Mobile Cards (3D translate) */
 @keyframes mobile-card-shimmer {
   0% {
-    transform: translateX(-150%) skewX(-20deg);
+    transform: translate3d(-150%, 0, 0) skewX(-20deg);
     opacity: 0;
   }
   12% {
-    opacity: 0.6;
+    opacity: 0.5;
   }
   24%, 100% {
-    transform: translateX(250%) skewX(-20deg);
+    transform: translate3d(250%, 0, 0) skewX(-20deg);
     opacity: 0;
   }
 }
@@ -756,60 +771,67 @@
 /* Gentle Icon Breathing on Mobile */
 @keyframes mobile-icon-wiggle {
   0%, 100% {
-    transform: scale(1) rotate(0deg);
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
   }
   50% {
-    transform: scale(1.09) rotate(3deg);
+    transform: translate3d(0, 0, 0) scale(1.06) rotate(2deg);
   }
 }
 
 /* Micro-Arrow Bounce on Mobile */
 @keyframes mobile-arrow-nudge {
   0%, 100% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateX(4px);
+    transform: translate3d(3px, 0, 0);
   }
 }
 
 /* Subtle Live Breathing for Stat Boxes */
 @keyframes mobile-stat-pulse {
   0%, 100% {
-    border-color: rgba(35, 40, 132, 0.15);
-    box-shadow: 0 4px 15px -3px rgba(35, 40, 132, 0.06);
+    opacity: 0.92;
   }
   50% {
-    border-color: rgba(61, 72, 200, 0.4);
-    box-shadow: 0 8px 22px -4px rgba(35, 40, 132, 0.16), 0 0 14px rgba(61, 72, 200, 0.12);
+    opacity: 1;
   }
 }
 
-/* Continuous Subtle Live Animations for Mobile Cards & Boxes */
+/* Continuous Subtle Live Animations for Mobile Cards & Boxes (60 FPS GPU Composited, Excluding Marquees) */
 @media (max-width: 768px) {
-  /* Staggered gentle float and glow on cards */
-  .itpl-card:nth-child(3n + 1),
-  .bounce-card:nth-child(3n + 1),
-  .stitch-card:nth-child(3n + 1),
-  .hover-lift-card:nth-child(3n + 1),
-  .mobile-float-card:nth-child(3n + 1) {
-    animation: mobile-gentle-bounce-1 5.8s ease-in-out infinite, mobile-card-glow 5.8s ease-in-out infinite;
+  /* Staggered gentle float on static cards only — never on moving marquee cards to preserve 60fps */
+  .itpl-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n + 1),
+  .bounce-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n + 1),
+  .stitch-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n + 1),
+  .hover-lift-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n + 1),
+  .mobile-float-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n + 1) {
+    animation: mobile-gentle-bounce-1 5.8s ease-in-out infinite;
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
-  .itpl-card:nth-child(3n + 2),
-  .bounce-card:nth-child(3n + 2),
-  .stitch-card:nth-child(3n + 2),
-  .hover-lift-card:nth-child(3n + 2),
-  .mobile-float-card:nth-child(3n + 2) {
-    animation: mobile-gentle-bounce-2 6.4s ease-in-out 1s infinite, mobile-card-glow 6.4s ease-in-out 1s infinite;
+  .itpl-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n + 2),
+  .bounce-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n + 2),
+  .stitch-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n + 2),
+  .hover-lift-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n + 2),
+  .mobile-float-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n + 2) {
+    animation: mobile-gentle-bounce-2 6.4s ease-in-out 1s infinite;
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
-  .itpl-card:nth-child(3n),
-  .bounce-card:nth-child(3n),
-  .stitch-card:nth-child(3n),
-  .hover-lift-card:nth-child(3n),
-  .mobile-float-card:nth-child(3n) {
-    animation: mobile-gentle-bounce-3 5.4s ease-in-out 2s infinite, mobile-card-glow 5.4s ease-in-out 2s infinite;
+  .itpl-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n),
+  .bounce-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n),
+  .stitch-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n),
+  .hover-lift-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n),
+  .mobile-float-card:not(.web-interns-scroll-track *):not(.android-interns-scroll-track *):not(.marquee-scroll-track *):nth-child(3n) {
+    animation: mobile-gentle-bounce-3 5.4s ease-in-out 2s infinite;
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   /* Top Accent Lines on Cards visible and flowing in real-time */
@@ -836,7 +858,7 @@
   /* Shimmer light sweeps across mobile cards periodically */
   .itpl-card-shimmer {
     animation: mobile-card-shimmer 7.5s ease-in-out infinite !important;
-    opacity: 0.35 !important;
+    opacity: 0.3 !important;
   }
   .itpl-card:nth-child(2n) .itpl-card-shimmer {
     animation-delay: 2.5s !important;

@@ -341,24 +341,32 @@ export const TeamSection: React.FC = () => {
 
         <style>{`
           @keyframes webInternsScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
           }
           .web-interns-scroll-track {
             animation: webInternsScroll 45s linear infinite;
             will-change: transform;
+            contain: layout paint style;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translate3d(0, 0, 0);
           }
           .web-interns-scroll-track:hover {
             animation-play-state: paused !important;
           }
 
           @keyframes androidInternsScroll {
-            0% { transform: translateX(-50%); }
-            100% { transform: translateX(0); }
+            0% { transform: translate3d(-50%, 0, 0); }
+            100% { transform: translate3d(0, 0, 0); }
           }
           .android-interns-scroll-track {
             animation: androidInternsScroll 38s linear infinite;
             will-change: transform;
+            contain: layout paint style;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translate3d(0, 0, 0);
           }
           .android-interns-scroll-track:hover {
             animation-play-state: paused !important;

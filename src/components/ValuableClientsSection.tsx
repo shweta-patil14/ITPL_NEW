@@ -142,11 +142,19 @@ export const ValuableClientsSection: React.FC = () => {
       <style>{`
         @keyframes marqueeScroll {
           0% {
-            transform: translateX(0);
+            transform: translate3d(0, 0, 0);
           }
           100% {
-            transform: translateX(-50%);
+            transform: translate3d(-50%, 0, 0);
           }
+        }
+
+        .marquee-scroll-track {
+          will-change: transform;
+          contain: layout paint style;
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+          transform: translate3d(0, 0, 0);
         }
 
         .marquee-scroll-track:hover {

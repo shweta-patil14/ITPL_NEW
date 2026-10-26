@@ -12,8 +12,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onOpenApplyMod
   const location = useLocation();
 
   useEffect(() => {
+    let ticking = false;
+    let lastScrolled = false;
     const onScroll = () => {
-      setScrolled(window.scrollY > 15);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const isScrolled = window.scrollY > 15;
+          if (isScrolled !== lastScrolled) {
+            lastScrolled = isScrolled;
+            setScrolled(isScrolled);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);

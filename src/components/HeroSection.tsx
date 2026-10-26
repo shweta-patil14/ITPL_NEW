@@ -23,6 +23,8 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
         <img
           src="/hero-bg.png"
           alt="Hero Background"
+          fetchPriority="high"
+          decoding="async"
           className="w-full h-full object-cover object-center brightness-125 contrast-105 saturate-110"
         />
       </div>
