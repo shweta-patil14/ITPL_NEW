@@ -10,9 +10,15 @@ export const BookletFloatingButton: React.FC<BookletFloatingButtonProps> = ({ on
   const [isOpening, setIsOpening] = useState(false);
   const location = useLocation();
 
-  // Don't show in candidate portal exam mode or print mode
-  const isCandidateTestRoute = location.pathname.startsWith('/candidate-dashboard');
-  if (isCandidateTestRoute) return null;
+  // Visible ONLY on public customer-facing pages (Hidden on Admin Panels, Login, and Internal Portals)
+  const isAdminOrPortalRoute =
+    location.pathname.startsWith('/admin') ||
+    location.pathname.startsWith('/login') ||
+    location.pathname.startsWith('/candidate-dashboard') ||
+    location.pathname.startsWith('/offer-letter') ||
+    location.pathname.startsWith('/bonafide');
+
+  if (isAdminOrPortalRoute) return null;
 
   const pdfUrl = '/INFOYASHONAND%20BOOKLET_20260117_161247_0000.pdf';
 
