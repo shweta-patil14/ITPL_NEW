@@ -44,7 +44,6 @@ export default function App() {
 
   // Quote Modal Form States
   const [quoteName, setQuoteName] = useState('');
-  const [quoteEmail, setQuoteEmail] = useState('');
   const [quoteCompany, setQuoteCompany] = useState('');
   const [quotePhone, setQuotePhone] = useState('');
   const [quoteBudget, setQuoteBudget] = useState('₹25k - ₹50k');
@@ -60,14 +59,9 @@ export default function App() {
 
     setIsSubmittingQuote(true);
     try {
-      const emailVal = quoteEmail.trim() || (quoteCompany.trim()
-        ? `${quoteCompany.trim().toLowerCase().replace(/[^a-z0-9]/g, '')}@lead.itpl`
-        : `lead-${Date.now().toString().slice(-4)}@infoyashonand.com`);
-
-      // 1. Record inquiry lead in admin database (synced to Firestore & localStorage in real time)
+      // 1. Record inquiry lead in admin database (synced to Firestore & localStorage)
       adminDb.saveInquiry({
         name: quoteName.trim(),
-        email: quoteEmail.trim() || emailVal,
         phone: quotePhone.trim(),
         company: quoteCompany.trim() || 'N/A',
         budget: quoteBudget,
@@ -77,27 +71,8 @@ export default function App() {
         status: 'New',
       });
 
-      // 2. Automatically register into HR Admin ATS Applications Pipeline as well
-      adminDb.createApplication({
-        candidateName: quoteName.trim(),
-        candidatePhone: quotePhone.trim(),
-        candidateEmail: emailVal,
-        jobTitle: `Free IT Quote: ${quoteCompany.trim() || 'Client Project'} (${quoteBudget})`,
-        department: 'IT Consulting & Solutions',
-        stage: 'submitted',
-        notes: [
-          `Inbound Free IT Quote Request submitted via Website Modal`,
-          `Estimated Budget: ${quoteBudget}`,
-          `Company / Organization: ${quoteCompany.trim() || 'N/A'}`,
-          `Email: ${quoteEmail.trim() || 'Not provided'}`,
-          `Phone: ${quotePhone.trim()}`,
-          `Project Summary: ${quoteSummary.trim() || 'No project description provided'}`,
-        ],
-      });
-
       triggerToast('Quote request submitted successfully! An IT architect will respond within 2 hours.');
       setQuoteName('');
-      setQuoteEmail('');
       setQuoteCompany('');
       setQuotePhone('');
       setQuoteBudget('₹25k - ₹50k');
@@ -172,13 +147,7 @@ export default function App() {
       />
 
       {/* Multi-Page Routes with smooth page entrance transition */}
-      <main
-        className={`w-full flex-1 overflow-x-clip print:p-0 print:m-0 print:overflow-visible print:block print:w-full ${
-          location.pathname === '/' || location.pathname === '/training'
-            ? 'pt-0'
-            : 'pt-[94px] sm:pt-[110px]'
-        }`}
-      >
+      <main className="w-full pt-[92px] min-[380px]:pt-[100px] sm:pt-28 lg:pt-32 flex-1 overflow-x-clip print:p-0 print:m-0 print:overflow-visible print:block print:w-full">
         <div key={location.pathname} className="animate-page-enter w-full print:animate-none print:transform-none print:overflow-visible print:block print:w-full">
           <Routes>
           <Route
@@ -257,27 +226,15 @@ export default function App() {
               className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-[#131B2E] focus:outline-none focus:border-[#232884] focus:bg-white"
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Company / Organization</label>
-              <input
-                type="text"
-                value={quoteCompany}
-                onChange={(e) => setQuoteCompany(e.target.value)}
-                placeholder="Business or Startup Name"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-[#131B2E] focus:outline-none focus:border-[#232884] focus:bg-white"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
-              <input
-                type="email"
-                value={quoteEmail}
-                onChange={(e) => setQuoteEmail(e.target.value)}
-                placeholder="name@company.com"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-[#131B2E] focus:outline-none focus:border-[#232884] focus:bg-white"
-              />
-            </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Company / Organization</label>
+            <input
+              type="text"
+              value={quoteCompany}
+              onChange={(e) => setQuoteCompany(e.target.value)}
+              placeholder="Your Business or Startup Name"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-[#131B2E] focus:outline-none focus:border-[#232884] focus:bg-white"
+            />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>

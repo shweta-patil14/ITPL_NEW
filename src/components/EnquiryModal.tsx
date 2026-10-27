@@ -54,36 +54,21 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      // 1. Save to Admin DB (Dual Firestore + LocalStorage with real-time events)
+      // 1. Save to Admin Database (persists locally to itpl_inquiries, dispatches real-time updates, & syncs to Firestore)
       adminDb.saveInquiry({
         name: formData.name.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         service: formData.service,
         message: formData.message.trim(),
-        source: 'Auto Popup Enquiry Form',
+        source: 'Live Tech Desk • Quick Enquiry Form',
         status: 'New',
       });
 
-      // 2. Also register in HR Admin ATS pipeline
-      adminDb.createApplication({
-        candidateName: formData.name.trim(),
-        candidateEmail: formData.email.trim(),
-        candidatePhone: formData.phone.trim(),
-        jobTitle: `Enquiry: ${formData.service}`,
-        department: 'Consulting & Inquiries',
-        stage: 'submitted',
-        notes: [
-          `Enquiry Form submitted via website popup`,
-          `Service: ${formData.service}`,
-          `Message: ${formData.message.trim() || 'N/A'}`,
-        ],
-      });
-
-      // 3. Mark handled in session so it never pops up again in same session
+      // 2. Mark handled in session so it never pops up again in same session
       sessionStorage.setItem('itpl_enquiry_handled', 'true');
 
-      // 4. Trigger celebration confetti
+      // 3. Trigger celebration confetti
       try {
         confetti({
           particleCount: 50,

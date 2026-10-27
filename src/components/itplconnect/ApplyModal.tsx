@@ -95,7 +95,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
         const stored = JSON.parse(localStorage.getItem('infoyashonand_applications') || '[]');
         localStorage.setItem('infoyashonand_applications', JSON.stringify([newApp, ...stored]));
 
-        // Sync with adminDb & Firestore
+        // Sync with adminDb & Firestore (ATS Pipeline)
         const adminApp = adminDb.createApplication({
           id: newApp.id,
           jobTitle: newApp.trackTitle,
@@ -108,6 +108,19 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
           notes: [`Tracking ID: ${newApp.trackingNumber}`, `Education: ${newApp.education} (${newApp.collegeName})`, `City: ${newApp.city}`],
         });
         createApplicationFirestore(adminApp);
+
+        // Also record inquiry in Admin DB so it appears in HR Admin inquiries desk
+        adminDb.saveInquiry({
+          id: `inq-${newApp.id}`,
+          name: newApp.fullName,
+          email: newApp.email,
+          phone: newApp.phone,
+          service: `Internship Track: ${newApp.trackTitle}`,
+          company: newApp.collegeName || newApp.city,
+          message: `Tracking ID: ${newApp.trackingNumber} | Education: ${newApp.education} (${newApp.graduationYear}) | College: ${newApp.collegeName} | City: ${newApp.city} | Mode: ${newApp.mode} | Statement: ${newApp.whyJoin}`,
+          source: 'Candidate Internship Application Form',
+          status: 'New',
+        });
       } catch (err) {
         console.error('Failed to save application to storage/Firestore', err);
       }

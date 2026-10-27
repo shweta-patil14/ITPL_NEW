@@ -37,30 +37,15 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
       return;
     }
 
-    // Save inquiry to Admin DB in real time (Dual Firestore + LocalStorage)
+    // Save inquiry to Admin DB (persists locally & syncs to Cloud Firestore in real time)
     adminDb.saveInquiry({
       name: formData.name.trim(),
       email: formData.email.trim(),
       phone: formData.phone.trim(),
       service: formData.service,
       message: formData.message.trim(),
-      source: 'Contact Form',
+      source: 'Website Contact & Inquiry Form',
       status: 'New',
-    });
-
-    // Also register in Candidate ATS Pipeline
-    adminDb.createApplication({
-      candidateName: formData.name.trim(),
-      candidateEmail: formData.email.trim(),
-      candidatePhone: formData.phone.trim(),
-      jobTitle: `Consultation: ${formData.service}`,
-      department: 'Client Inquiries',
-      stage: 'submitted',
-      notes: [
-        `Contact Form inquiry received via website`,
-        `Selected Service: ${formData.service}`,
-        `Message: ${formData.message.trim() || 'N/A'}`,
-      ],
     });
 
     onFormSubmitSuccess(

@@ -240,8 +240,8 @@ const INITIAL_APPLICATIONS: ApplicationItem[] = [
     id: 'app-1',
     jobTitle: 'Full-Stack Web Developer Trainee',
     candidateId: 'ITPL-CAND-2026-081',
-    candidateName: 'akshad',
-    candidateEmail: 'akshad@gmail.com',
+    candidateName: 'Aarav Sharma',
+    candidateEmail: 'aarav.sharma@gmail.com',
     candidatePhone: '+91 98220 54321',
     department: 'Technology',
     stage: 'technical_interview',
@@ -603,15 +603,40 @@ class AdminDatabase {
     if (this.initialized) return;
     this.initialized = true;
 
-    // Purge obsolete dummy data
+    // Purge deleted inquiries and obsolete dummy data
     try {
       const storedApps = localStorage.getItem('itpl_admin_applications');
-      if (storedApps && (storedApps.includes('Akshad') || storedApps.includes('Priya Deshpande'))) {
+      if (storedApps && (storedApps.includes('Akshad') || storedApps.includes('Priya Deshpande') || storedApps.includes('shindeakshad55'))) {
         localStorage.removeItem('itpl_admin_applications');
         localStorage.removeItem('itpl_admin_offers');
         localStorage.removeItem('itpl_admin_interviews');
         localStorage.removeItem('itpl_admin_internships');
       }
+
+      ['itpl_inquiries', 'itpl_enquiries'].forEach((key) => {
+        const raw = localStorage.getItem(key);
+        if (
+          raw &&
+          (raw.includes('1792991313175') ||
+            raw.includes('shindeakshad55') ||
+            raw.includes('Akshad Shinde') ||
+            raw.includes('1793011259287') ||
+            raw.includes('8010861316'))
+        ) {
+          const list = JSON.parse(raw);
+          if (Array.isArray(list)) {
+            const cleaned = list.filter(
+              (i: any) =>
+                i.id !== 'inq-1792991313175-475' &&
+                i.id !== 'inq-1793011259287-967' &&
+                i.email !== 'shindeakshad55@gmail.com' &&
+                i.name !== 'Akshad Shinde' &&
+                i.phone !== '8010861316'
+            );
+            localStorage.setItem(key, JSON.stringify(cleaned));
+          }
+        }
+      });
     } catch {
       // ignore
     }
@@ -676,22 +701,10 @@ class AdminDatabase {
     // then dispatch a storage event so any mounted UI (AdminPage) refreshes automatically.
     if (isFirebaseConfigured) {
       loadAllFromFirestore()
-        .then(({ applications, offers, internships, employees, certificates, inquiries }) => {
+        .then(({ applications, offers, internships, employees, certificates }) => {
           let changed = false;
-
-          if (inquiries && inquiries.length > 0) {
-            localStorage.setItem('itpl_inquiries', JSON.stringify(inquiries));
-            if (typeof window !== 'undefined') {
-              window.dispatchEvent(new CustomEvent('itpl_inquiries_updated'));
-            }
-            changed = true;
-          }
-
           if (applications !== null) {
             localStorage.setItem('itpl_admin_applications', JSON.stringify(applications));
-            if (typeof window !== 'undefined') {
-              window.dispatchEvent(new CustomEvent('itpl_applications_updated'));
-            }
             changed = true;
           }
 
@@ -737,7 +750,25 @@ class AdminDatabase {
       if (data) {
         const apps: ApplicationItem[] = JSON.parse(data);
         let changed = false;
-        const normalized = apps.map((app) => {
+
+        // Filter out any quote or non-candidate entries
+        const cleanApps = apps.filter((app) => {
+          const isQuoteLead =
+            app.jobTitle?.toLowerCase().includes('quote') ||
+            app.candidateEmail?.endsWith('@quote.itpl') ||
+            app.candidateEmail?.includes('lead-') ||
+            (app.candidateName === 'Shweta Patil' && app.department === 'IT Consulting & Solutions');
+          if (isQuoteLead) {
+            changed = true;
+            if (isFirebaseConfigured && app.id) {
+              deleteApplicationFirestore(app.id);
+            }
+            return false;
+          }
+          return true;
+        });
+
+        const normalized = cleanApps.map((app) => {
           if ((app.stage as string) === 'screening') {
             changed = true;
             return { ...app, stage: 'submitted' as const };
@@ -1255,15 +1286,9 @@ class AdminDatabase {
       notes: app.notes || ['Applied via candidate portal'],
     };
     apps.unshift(newApp);
-    try {
-      localStorage.setItem('itpl_admin_applications', JSON.stringify(apps));
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('itpl_applications_updated'));
-      }
-    } catch (e) {}
-
+    localStorage.setItem('itpl_admin_applications', JSON.stringify(apps));
     if (isFirebaseConfigured) {
-      createApplicationFirestore(newApp).catch(() => {});
+      createApplicationFirestore(newApp);
     }
     return newApp;
   }
@@ -1746,6 +1771,45 @@ class AdminDatabase {
       if (data) {
         return JSON.parse(data);
       }
+      // Check legacy key if present
+      const legacy = localStorage.getItem('itpl_enquiries');
+      if (legacy) {
+        const parsed = JSON.parse(legacy);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          localStorage.setItem('itpl_inquiries', JSON.stringify(parsed));
+          return parsed;
+        }
+      }
+
+      // Default sample candidate inquiries for HR initial view
+      const defaultInquiries: ContactInquiryFirestore[] = [
+        {
+          id: 'inq-cand-101',
+          name: 'Pranav Shinde',
+          email: 'pranav.shinde@gmail.com',
+          phone: '+91 98220 12345',
+          service: 'Full-Stack Python & Java Job Training',
+          company: 'Walchand College of Engineering',
+          message: 'Final year BE CSE student looking for 6-month offline internship and placement training in Sangli center.',
+          source: 'Live Tech Desk • Quick Enquiry Form',
+          status: 'New',
+          createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+        },
+        {
+          id: 'inq-cand-102',
+          name: 'Neha Kulkarni',
+          email: 'neha.kulkarni@gmail.com',
+          phone: '+91 88884 56789',
+          service: 'MERN & Next.js Web Stack',
+          company: 'Shivaji University, Kolhapur',
+          message: 'Interested in hands-on production code deployment and cloud integration modules.',
+          source: 'Website Contact & Inquiry Form',
+          status: 'In Discussion',
+          createdAt: new Date(Date.now() - 180 * 60 * 1000).toISOString(),
+        },
+      ];
+      localStorage.setItem('itpl_inquiries', JSON.stringify(defaultInquiries));
+      return defaultInquiries;
     } catch (e) {
       console.warn('Could not read inquiries from localStorage', e);
     }
@@ -1762,8 +1826,8 @@ class AdminDatabase {
       email: inquiry.email || '',
       phone: inquiry.phone || '',
       service: inquiry.service || 'IT Solutions & Consulting',
-      company: inquiry.company || 'N/A',
-      budget: inquiry.budget || '₹25k - ₹50k',
+      company: inquiry.company || '',
+      budget: inquiry.budget || '',
       message: inquiry.message || '',
       source: inquiry.source || 'Website Quote Form',
       status: inquiry.status || 'New',
@@ -1773,17 +1837,13 @@ class AdminDatabase {
     const updated = [newInquiry, ...existing.filter((i) => i.id !== id)];
     try {
       localStorage.setItem('itpl_inquiries', JSON.stringify(updated));
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('itpl_inquiries_updated'));
-      }
+      window.dispatchEvent(new CustomEvent('itpl_inquiries_updated'));
     } catch (e) {
       console.warn('Could not save inquiry to localStorage', e);
     }
 
     if (isFirebaseConfigured) {
-      createInquiryFirestore(newInquiry).catch((err) => {
-        console.warn('createInquiryFirestore background error:', err);
-      });
+      createInquiryFirestore(newInquiry).catch(() => {});
     }
 
     return newInquiry;
@@ -1834,26 +1894,6 @@ class AdminDatabase {
     return () => {
       window.removeEventListener('storage', handleStorage);
       window.removeEventListener('itpl_inquiries_updated', handleCustom);
-    };
-  }
-
-  public subscribeToApplications(listener: () => void): () => void {
-    if (typeof window === 'undefined') return () => {};
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === 'itpl_admin_applications' || !e.key) {
-        listener();
-      }
-    };
-    const handleCustom = () => {
-      listener();
-    };
-
-    window.addEventListener('storage', handleStorage);
-    window.addEventListener('itpl_applications_updated', handleCustom);
-
-    return () => {
-      window.removeEventListener('storage', handleStorage);
-      window.removeEventListener('itpl_applications_updated', handleCustom);
     };
   }
 }
