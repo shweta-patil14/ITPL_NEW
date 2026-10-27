@@ -317,16 +317,15 @@ export const OurTeamManager: React.FC<OurTeamManagerProps> = ({ isAdmin, showToa
             </button>
           )}
 
-          {isAdmin && (
-            <button
-              type="button"
-              onClick={handleStartAdd}
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-[#232884] hover:bg-[#1a1e64] text-white shadow-sm flex items-center gap-1.5 cursor-pointer transition-colors"
-            >
-              <span className="material-symbols-outlined text-sm">person_add</span>
-              <span>+ Add Team Member</span>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={handleStartAdd}
+            className="px-4 py-2 rounded-xl text-xs font-bold bg-[#232884] hover:bg-[#1a1e64] text-white shadow-sm flex items-center gap-1.5 cursor-pointer transition-all hover:shadow-md active:scale-95"
+            title="Add a new team member to the employee directory and public website"
+          >
+            <span className="material-symbols-outlined text-sm">person_add</span>
+            <span>+ Add Team Member</span>
+          </button>
         </div>
       </div>
 
@@ -485,16 +484,14 @@ export const OurTeamManager: React.FC<OurTeamManagerProps> = ({ isAdmin, showToa
                     </span>
 
                     <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                      {isAdmin && (
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteMember(member)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                          title="Delete employee"
-                        >
-                          <span className="material-symbols-outlined text-sm">delete</span>
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteMember(member)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                        title="Delete employee"
+                      >
+                        <span className="material-symbols-outlined text-sm">delete</span>
+                      </button>
                     </div>
                   </div>
 
