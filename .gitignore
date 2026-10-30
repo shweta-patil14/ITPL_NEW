@@ -6,6 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
-infoyashonand.com.zip
+*.zip
 scratch/
 Interns photo/

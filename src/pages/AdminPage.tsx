@@ -549,7 +549,7 @@ export const AdminPage: React.FC = () => {
 
   const newInquiriesCount = inquiries.filter((i) => i.status === 'New' || !i.status).length;
 
-  const handleUpdateInquiryStatus = (id: string, status: ContactInquiryFirestore['status']) => {
+  const handleUpdateInquiryStatus = (id: string, status: NonNullable<ContactInquiryFirestore['status']>) => {
     adminDb.updateInquiryStatus(id, status);
     setInquiries(adminDb.getInquiries());
     showToast(`Inquiry status updated to "${status}"`);
@@ -1246,7 +1246,7 @@ export const AdminPage: React.FC = () => {
                                     inq.id &&
                                     handleUpdateInquiryStatus(
                                       inq.id,
-                                      e.target.value as ContactInquiryFirestore['status']
+                                      e.target.value as NonNullable<ContactInquiryFirestore['status']>
                                     )
                                   }
                                   className={`text-[11px] font-extrabold px-2.5 py-1.5 rounded-xl border appearance-none cursor-pointer focus:outline-none transition-all shadow-2xs ${
@@ -2307,7 +2307,7 @@ export const AdminPage: React.FC = () => {
                   <select
                     value={selectedInquiryForDetails.status || 'New'}
                     onChange={(e) => {
-                      const newSt = e.target.value as ContactInquiryFirestore['status'];
+                      const newSt = e.target.value as NonNullable<ContactInquiryFirestore['status']>;
                       if (selectedInquiryForDetails.id) {
                         handleUpdateInquiryStatus(selectedInquiryForDetails.id, newSt);
                         setSelectedInquiryForDetails({
