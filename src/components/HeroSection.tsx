@@ -64,10 +64,10 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
 
         {/* Main Tagline: Down-to-up cinematic entrance with 5-second timing */}
         <div
-          className={`transform transition-all duration-1000 delay-150 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`transform transition-all duration-700 delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isVisible
-              ? 'opacity-100 translate-y-0 filter blur-none scale-100'
-              : 'opacity-0 translate-y-14 filter blur-sm scale-[0.98] pointer-events-none'
+              ? 'opacity-100 translate-y-0 scale-100'
+              : 'opacity-0 translate-y-10 scale-[0.98] pointer-events-none'
           }`}
         >
           <h1
@@ -86,10 +86,10 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
 
         {/* Supporting Sub-headline: Down-to-up smooth entrance */}
         <div
-          className={`transform transition-all duration-1000 delay-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`transform transition-all duration-700 delay-200 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isVisible
-              ? 'opacity-100 translate-y-0 filter blur-none'
-              : 'opacity-0 translate-y-12 filter blur-sm pointer-events-none'
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-8 pointer-events-none'
           }`}
         >
           <p className="text-xs min-[360px]:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-slate-100 font-semibold max-w-3xl leading-relaxed drop-shadow-[0_3px_14px_rgba(0,0,0,0.9)]">

@@ -1,8 +1,17 @@
+# https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /candidate-dashboard
+Disallow: /offer-letter
+Disallow: /bonafide-certificate
 
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
+Disallow: /candidate-dashboard
+Disallow: /offer-letter
+Disallow: /bonafide-certificate
 
 User-agent: Googlebot-Image
 Allow: /
@@ -10,5 +19,6 @@ Allow: /
 User-agent: Google-Favicon
 Allow: /
 
-# Canonical host
+# Canonical host and sitemap
 Host: https://infoyashonand.com
+Sitemap: https://infoyashonand.com/sitemap.xml

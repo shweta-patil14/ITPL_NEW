@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
+  const [activeModal, setActiveModal] = useState<'privacy' | 'terms' | 'support' | null>(null);
+
+  const handleScrollTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
+  const googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=Infoyashonand+Technology+Pvt+Ltd+Vishrambag+Sangli';
+
   return (
     <footer className="w-full bg-[#080C1D] text-white pt-11 pb-7 border-t border-white/10 relative overflow-hidden">
       {/* Top Ambient Glow Line */}
@@ -20,6 +28,7 @@ export const Footer: React.FC = () => {
             <div className="h-10 mb-3.5 flex items-center">
               <Link
                 to="/"
+                onClick={handleScrollTop}
                 className="inline-flex items-center gap-2.5 select-none group cursor-pointer"
                 aria-label="Infoyashonand Technology Home"
               >
@@ -79,15 +88,21 @@ export const Footer: React.FC = () => {
             <div className="space-y-1.5 text-xs">
               <div className="flex items-start gap-2">
                 <span className="material-symbols-outlined text-sm text-cyan-400 shrink-0 mt-0.5">location_on</span>
-                <span className="text-slate-200 font-medium leading-snug">
+                <a
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-200 hover:text-cyan-300 hover:underline transition-colors font-medium leading-snug cursor-pointer"
+                  title="Click to view our office on Google Maps"
+                >
                   1st Floor, Pearl Enclave, M.S.E.B. Rd, Sangli 416416
-                </span>
+                </a>
               </div>
 
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-sm text-cyan-400 shrink-0">call</span>
                 <div className="flex flex-wrap gap-x-1.5 text-slate-300">
-                  <a href="tel:+918055514368" className="hover:text-white hover:underline transition-colors font-medium">
+                  <a href="tel:+918055514368" className="hover:text-cyan-300 hover:underline transition-colors font-medium cursor-pointer">
                     +91 8055514368
                   </a>
                 </div>
@@ -97,7 +112,7 @@ export const Footer: React.FC = () => {
                 <span className="material-symbols-outlined text-sm text-cyan-400 shrink-0">mail</span>
                 <a
                   href="mailto:support@infoyashonand.com"
-                  className="text-cyan-300 hover:text-white hover:underline transition-colors font-medium"
+                  className="text-cyan-300 hover:text-white hover:underline transition-colors font-medium cursor-pointer"
                 >
                   support@infoyashonand.com
                 </a>
@@ -143,59 +158,92 @@ export const Footer: React.FC = () => {
             </div>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Home</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/about">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/about"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">About Us</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/services">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/services"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Services</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/training">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/training"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Training &amp; Job Consultant</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/portfolio">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/portfolio"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Portfolio</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/team">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/team"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Our Team</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/contact">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/contact"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Contact Us</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/candidate-dashboard">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/candidate-dashboard"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Candidate Portal &amp; Test</span>
                 </Link>
               </li>
               <li>
                 <a
-                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group"
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
                   href="/INFOYASHONAND%20BOOKLET_20260117_161247_0000.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
+                  title="Open Official Company Brochure PDF in new tab"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Company Booklet (PDF)</span>
@@ -205,7 +253,11 @@ export const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/admin">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/admin"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Admin Workspace</span>
                 </Link>
@@ -223,43 +275,71 @@ export const Footer: React.FC = () => {
             </div>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/services">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/services?search=App&category=development"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">App Development</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/services">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/services?search=Web&category=development"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Web Development</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/services">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/services?category=development"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Software Development</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/services">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/services?category=marketing"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Digital Marketing</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/training">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/training"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Training &amp; Job Consultant</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/services">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/services?search=Cloud"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">Cloud &amp; DevOps</span>
                 </Link>
               </li>
               <li>
-                <Link className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group" to="/services">
+                <Link
+                  className="text-slate-300 hover:text-white transition-all inline-flex items-center gap-2 group cursor-pointer"
+                  to="/services?category=telecom"
+                  onClick={handleScrollTop}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors shrink-0" />
                   <span className="group-hover:translate-x-1 transition-transform">WhatsApp API</span>
                 </Link>
@@ -276,19 +356,37 @@ export const Footer: React.FC = () => {
               <div className="w-8 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mt-1.5" />
             </div>
             <p className="mb-2 text-slate-400 leading-snug text-xs">Visit our development center:</p>
-            <div className="p-3.5 rounded-xl bg-white/[0.04] backdrop-blur-md border border-white/10 text-slate-300 shadow-md hover:border-blue-400/40 hover:bg-white/[0.06] transition-all group">
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="material-symbols-outlined text-base text-cyan-400">domain</span>
-                <div className="font-bold text-white text-xs sm:text-sm">Vishrambag Headquarters</div>
+            <a
+              href={googleMapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block p-3.5 rounded-xl bg-white/[0.04] backdrop-blur-md border border-white/10 text-slate-300 shadow-md hover:border-cyan-400/50 hover:bg-white/[0.08] transition-all group cursor-pointer"
+              title="Click to view our Vishrambag headquarters on Google Maps"
+            >
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-base text-cyan-400 group-hover:scale-110 transition-transform">domain</span>
+                  <div className="font-bold text-white text-xs sm:text-sm group-hover:text-cyan-300 transition-colors">
+                    Vishrambag Headquarters
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-xs text-slate-400 group-hover:text-cyan-300 transition-colors">
+                  open_in_new
+                </span>
               </div>
-              <div className="text-xs leading-relaxed text-slate-300 pl-6">
+              <div className="text-xs leading-relaxed text-slate-300 pl-6 group-hover:text-white transition-colors">
                 Opposite MSEB Office, Vishrambag, Sangli, Maharashtra 416416
               </div>
-              <div className="mt-2.5 pt-2 border-t border-white/10 text-emerald-400 font-semibold text-xs flex items-center gap-2">
-                <span className="material-symbols-outlined text-sm text-emerald-400">schedule</span>
-                <span>Open Mon - Sat (9:00 AM - 7:00 PM)</span>
+              <div className="mt-2.5 pt-2 border-t border-white/10 text-emerald-400 font-semibold text-xs flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-sm text-emerald-400">schedule</span>
+                  <span>Open Mon - Sat (9:00 AM - 7:00 PM)</span>
+                </div>
+                <span className="text-[11px] text-cyan-400 group-hover:underline font-normal shrink-0">
+                  Get Directions →
+                </span>
               </div>
-            </div>
+            </a>
           </div>
 
           {/* Column 5: Google Maps Section */}
@@ -299,10 +397,10 @@ export const Footer: React.FC = () => {
                 <div className="w-8 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mt-1.5" />
               </div>
               <a
-                href="https://www.google.com/maps/search/?api=1&query=Infoyashonand+Technology+Pvt+Ltd+Vishrambag+Sangli"
+                href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-400/20 text-xs text-cyan-300 hover:text-white hover:bg-blue-500/20 hover:border-blue-400/40 transition-all font-medium"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-400/20 text-xs text-cyan-300 hover:text-white hover:bg-blue-500/20 hover:border-blue-400/40 transition-all font-medium cursor-pointer"
                 title="Open location in Google Maps"
               >
                 <span>Open in Maps</span>
@@ -328,20 +426,197 @@ export const Footer: React.FC = () => {
             © {new Date().getFullYear()} <span className="text-slate-200 font-semibold">Infoyashonand Technology Pvt. Ltd.</span> All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs">
-            <Link to="/contact" className="hover:text-cyan-300 transition-colors">
+            <button
+              type="button"
+              onClick={() => setActiveModal('privacy')}
+              className="hover:text-cyan-300 transition-colors cursor-pointer"
+            >
               Privacy Policy
-            </Link>
+            </button>
             <span className="text-slate-600">•</span>
-            <Link to="/contact" className="hover:text-cyan-300 transition-colors">
+            <button
+              type="button"
+              onClick={() => setActiveModal('terms')}
+              className="hover:text-cyan-300 transition-colors cursor-pointer"
+            >
               Terms &amp; Conditions
-            </Link>
+            </button>
             <span className="text-slate-600">•</span>
-            <Link to="/contact" className="hover:text-cyan-300 transition-colors">
+            <button
+              type="button"
+              onClick={() => setActiveModal('support')}
+              className="hover:text-cyan-300 transition-colors cursor-pointer"
+            >
               Support
-            </Link>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* MODAL: Privacy Policy, Terms & Conditions, Support */}
+      {activeModal && (
+        <div
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
+          onClick={() => setActiveModal(null)}
+        >
+          <div
+            className="bg-[#0f172a] border border-slate-700 text-white rounded-2xl w-full max-w-xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-[#1e293b]/60">
+              <div>
+                <h3 className="font-heading font-extrabold text-lg text-white">
+                  {activeModal === 'privacy' && 'Privacy Policy'}
+                  {activeModal === 'terms' && 'Terms & Conditions'}
+                  {activeModal === 'support' && 'Customer & Technical Support'}
+                </h3>
+                <span className="text-[11px] text-cyan-400 font-mono">Infoyashonand Technology Pvt. Ltd.</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveModal(null)}
+                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold transition-colors cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="px-6 py-5 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+              {activeModal === 'privacy' && (
+                <>
+                  <div>
+                    <h4 className="font-bold text-white text-sm mb-1">1. Information Collection &amp; Use</h4>
+                    <p className="text-slate-300 text-xs">
+                      We collect necessary business and contact details solely to deliver software development, IT consulting, recruitment verification, and digital marketing services.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white text-sm mb-1">2. Non-Disclosure &amp; Intellectual Property</h4>
+                    <p className="text-slate-300 text-xs">
+                      All proprietary source codes, business models, client algorithms, and enterprise databases are covered by strict non-disclosure obligations and will never be disclosed, rented, or traded.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white text-sm mb-1">3. Candidate Identification &amp; UIDAI Compliance</h4>
+                    <p className="text-slate-300 text-xs">
+                      Any candidate identification (such as UIDAI Aadhaar) submitted through our recruitment portal is used exclusively for fraud prevention and KYC verification. All Aadhaar numbers are masked in adherence with government regulations.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white text-sm mb-1">4. Contact For Privacy Inquiries</h4>
+                    <p className="text-slate-300 text-xs">
+                      For any questions regarding your data or to request data removal, please contact our Data Protection Officer at{' '}
+                      <a href="mailto:support@infoyashonand.com" className="text-cyan-400 underline">support@infoyashonand.com</a>.
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {activeModal === 'terms' && (
+                <>
+                  <div>
+                    <h4 className="font-bold text-white text-sm mb-1">1. Scope of Engagement</h4>
+                    <p className="text-slate-300 text-xs">
+                      All software engineering, app development, cloud infrastructure, and training programs are governed by written service level agreements (SLAs) and milestones established at project inception.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white text-sm mb-1">2. Code Ownership &amp; IP Transfer</h4>
+                    <p className="text-slate-300 text-xs">
+                      Upon final settlement of project payments, all custom source codes, assets, and intellectual property developed specifically for the client are formally transferred in full.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white text-sm mb-1">3. Warranty &amp; Maintenance Support</h4>
+                    <p className="text-slate-300 text-xs">
+                      Production deployments include our standard 30-day post-launch warranty covering defect rectification and technical stabilization. Extended maintenance is available through dedicated SLA agreements.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white text-sm mb-1">4. Governing Law &amp; Jurisdiction</h4>
+                    <p className="text-slate-300 text-xs">
+                      These terms and all related transactions are governed under the laws of the Republic of India and subject to the exclusive jurisdiction of the competent courts in Sangli, Maharashtra.
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {activeModal === 'support' && (
+                <div className="space-y-3.5">
+                  <p className="text-slate-300 text-xs">
+                    Need immediate assistance with a software project, student trainee verification, or IT consultation? Connect directly with our support desk:
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <a
+                      href="tel:+918055514368"
+                      className="p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-cyan-400 flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-cyan-400 text-lg">call</span>
+                      <div>
+                        <span className="block text-[10px] text-slate-400 uppercase font-bold">Helpline</span>
+                        <span className="font-mono text-white text-xs font-bold">+91 8055514368</span>
+                      </div>
+                    </a>
+
+                    <a
+                      href="https://wa.me/918055514368"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-800/50 hover:border-emerald-500 flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-emerald-400 text-lg">chat</span>
+                      <div>
+                        <span className="block text-[10px] text-emerald-400 uppercase font-bold">WhatsApp Desk</span>
+                        <span className="text-white text-xs font-bold">Chat with Team</span>
+                      </div>
+                    </a>
+
+                    <a
+                      href="mailto:support@infoyashonand.com"
+                      className="p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-cyan-400 flex items-center gap-3 transition-colors cursor-pointer sm:col-span-2"
+                    >
+                      <span className="material-symbols-outlined text-cyan-400 text-lg">mail</span>
+                      <div>
+                        <span className="block text-[10px] text-slate-400 uppercase font-bold">Official Email</span>
+                        <span className="font-mono text-white text-xs font-bold">support@infoyashonand.com</span>
+                      </div>
+                    </a>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60 text-xs text-slate-300 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-amber-400 text-sm">schedule</span>
+                    <span>Support Hours: Monday – Saturday, 9:00 AM – 7:00 PM IST</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-3.5 border-t border-slate-800 bg-[#1e293b]/40 flex items-center justify-between">
+              <Link
+                to="/contact"
+                onClick={() => {
+                  setActiveModal(null);
+                  handleScrollTop();
+                }}
+                className="text-xs font-bold text-cyan-400 hover:underline inline-flex items-center gap-1 cursor-pointer"
+              >
+                <span>Visit Contact Desk</span>
+                <span>→</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => setActiveModal(null)}
+                className="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </footer>
   );
 };

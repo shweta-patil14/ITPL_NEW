@@ -332,10 +332,10 @@ export const TrainingPage: React.FC<TrainingPageProps> = () => {
         <div className="absolute inset-0 bg-[#00113a]/40 backdrop-brightness-90 pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#00113a]/65 via-transparent to-[#00113a]/85 pointer-events-none" />
 
-        {/* Ambient Glowing Orbs & Bottom Slanted Skew */}
+        {/* Ambient Glowing Orbs & Bottom Slanted Skew (radial gradients, 60fps compositor friendly) */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-32 -left-32 w-96 h-96 lg:w-[500px] lg:h-[500px] bg-[#0059bb]/20 rounded-full blur-[120px] animate-pulse" />
-          <div className="absolute -bottom-32 -right-32 w-96 h-96 lg:w-[500px] lg:h-[500px] bg-amber-500/15 rounded-full blur-[130px] animate-pulse" style={{ animationDuration: '4s' }} />
+          <div className="absolute -top-32 -left-32 w-96 h-96 lg:w-[500px] lg:h-[500px] rounded-full bg-[radial-gradient(circle,rgba(0,89,187,0.25)_0%,transparent_70%)] animate-pulse" />
+          <div className="absolute -bottom-32 -right-32 w-96 h-96 lg:w-[500px] lg:h-[500px] rounded-full bg-[radial-gradient(circle,rgba(245,158,11,0.18)_0%,transparent_70%)] animate-pulse" style={{ animationDuration: '4s' }} />
           <div className="absolute bottom-0 left-0 right-0 h-12 sm:h-16 lg:h-20 bg-[#f8f9fa] transform -skew-y-1 sm:-skew-y-2 origin-bottom-left" />
         </div>
 

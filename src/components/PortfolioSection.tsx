@@ -60,10 +60,10 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ onSelectProj
         {/* Section Header */}
         <div
           className={`text-center max-w-3xl mx-auto mb-10 sm:mb-12 transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            isVisible ? 'opacity-100 translate-y-0 filter-none' : 'opacity-0 translate-y-6 filter blur-xs'
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
           }`}
         >
-          <div className="pill-bounce cursor-default inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white border border-indigo-200/90 text-[11px] sm:text-xs font-extrabold text-[#232884] shadow-xs backdrop-blur-md mb-3 max-w-full flex-wrap sm:flex-nowrap">
+          <div className="pill-bounce cursor-default inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white border border-indigo-200/90 text-[11px] sm:text-xs font-extrabold text-[#232884] shadow-xs mb-3 max-w-full flex-wrap sm:flex-nowrap">
             <span className="relative flex h-2 w-2 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3D48C8] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#232884]"></span>

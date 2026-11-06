@@ -1382,9 +1382,32 @@ export const AdminPage: React.FC = () => {
                             <tr key={app.id} className="hover:bg-slate-50 transition-colors">
                               <td className="p-3 font-bold text-slate-900">
                                 <div className="text-sm font-bold text-slate-900">{app.candidateName}</div>
-                                <span className="text-[10px] text-slate-400 font-normal font-mono">
+                                <div className="text-[10px] text-slate-400 font-normal font-mono">
                                   {app.candidateEmail}
-                                </span>
+                                </div>
+                                {app.candidatePhone && (
+                                  <div className="text-[10px] text-slate-500 font-mono">
+                                    {app.candidatePhone}
+                                  </div>
+                                )}
+                                {app.aadhaarMasked ? (
+                                  <div className="mt-1">
+                                    <span
+                                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                      title={app.aadhaarVerified ? 'UIDAI Verhoeff Checksum Verified' : 'Aadhaar ID Provided'}
+                                    >
+                                      <span className="material-symbols-outlined text-[11px] text-emerald-600">verified_user</span>
+                                      <span>{app.aadhaarMasked}</span>
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <div className="mt-1">
+                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                                      <span className="material-symbols-outlined text-[11px] text-amber-500">warning</span>
+                                      <span>Aadhaar Pending</span>
+                                    </span>
+                                  </div>
+                                )}
                               </td>
                               <td className="p-3">
                                 <span className="font-semibold text-slate-800">{app.jobTitle}</span>

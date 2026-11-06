@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { X, Sparkles, Check, Copy, ArrowRight, MessageCircle, Upload, CheckCircle2, Phone, Mail, Building, GraduationCap, MapPin, User } from 'lucide-react';
+import { X, Sparkles, Check, Copy, ArrowRight, MessageCircle, Upload, CheckCircle2, Phone, Mail, Building, GraduationCap, MapPin, User, ShieldCheck } from 'lucide-react';
 import { itplPrograms } from '../../data/itplConnectPrograms';
 import { adminDb } from '../../services/adminDb';
 import { createApplicationFirestore } from '../../firebase/firestoreService';
+import {
+  validateAadhaar,
+  formatAadhaar,
+  maskAadhaar,
+  validateIndianMobile,
+} from '../../utils/aadhaarValidator';
 
 interface ApplyModalProps {
   isOpen: boolean;
@@ -38,6 +44,61 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
   const [resumeFileName, setResumeFileName] = useState<string>('My_Resume.pdf');
   const [whyJoin, setWhyJoin] = useState<string>('');
 
+  // Aadhaar Identification & Verification States (Anti-Fraud System)
+  const [aadhaarNumber, setAadhaarNumber] = useState<string>('');
+  const [aadhaarDocFileName, setAadhaarDocFileName] = useState<string>('');
+  const [aadhaarDocDataUrl, setAadhaarDocDataUrl] = useState<string>('');
+  const [step2Error, setStep2Error] = useState<string>('');
+  const [aadhaarFeedback, setAadhaarFeedback] = useState<{ isValid?: boolean; message?: string }>({});
+  const [phoneFeedback, setPhoneFeedback] = useState<{ isValid?: boolean; message?: string }>({});
+
+  const handleAadhaarChange = (val: string) => {
+    const formatted = formatAadhaar(val);
+    setAadhaarNumber(formatted);
+    const digits = formatted.replace(/\D/g, '');
+    if (digits.length === 12) {
+      const res = validateAadhaar(formatted);
+      if (res.isValid) {
+        setAadhaarFeedback({ isValid: true, message: '✓ Valid Aadhaar (UIDAI Verhoeff Checksum Verified)' });
+      } else {
+        setAadhaarFeedback({ isValid: false, message: res.error });
+      }
+    } else if (digits.length > 0) {
+      setAadhaarFeedback({ isValid: undefined, message: `${digits.length}/12 digits` });
+    } else {
+      setAadhaarFeedback({});
+    }
+  };
+
+  const handlePhoneChange = (val: string) => {
+    setPhone(val);
+    const digits = val.replace(/\D/g, '');
+    if (digits.length >= 10) {
+      const res = validateIndianMobile(val);
+      if (res.isValid) {
+        setPhoneFeedback({ isValid: true, message: '✓ Valid 10-Digit Mobile' });
+      } else {
+        setPhoneFeedback({ isValid: false, message: res.error });
+      }
+    } else if (digits.length > 0) {
+      setPhoneFeedback({ isValid: undefined, message: `${digits.length}/10 digits` });
+    } else {
+      setPhoneFeedback({});
+    }
+  };
+
+  const handleAadhaarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setAadhaarDocFileName(file.name);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setAadhaarDocDataUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
     if (preSelectedTrackId) {
       setTrackId(preSelectedTrackId);
@@ -54,11 +115,45 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
 
   const handleNextOrSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (step < 3) {
-      setStep(step + 1);
+    if (step === 1) {
+      setStep(2);
+    } else if (step === 2) {
+      // 1. Strict mobile validation (anti-fake number)
+      const mobCheck = validateIndianMobile(phone);
+      if (!mobCheck.isValid) {
+        setStep2Error(mobCheck.error || 'Please enter a valid 10-digit Indian mobile number.');
+        return;
+      }
+
+      // 2. Strict Aadhaar UIDAI Verhoeff validation (anti-fake Aadhaar)
+      const aadhaarCheck = validateAadhaar(aadhaarNumber);
+      if (!aadhaarCheck.isValid) {
+        setStep2Error(aadhaarCheck.error || 'Valid 12-digit Aadhaar identification number is required.');
+        return;
+      }
+
+      // 3. Duplicate check across existing applications
+      try {
+        const stored = JSON.parse(localStorage.getItem('infoyashonand_applications') || '[]');
+        const cleanA = aadhaarNumber.replace(/[\s-]/g, '');
+        const duplicate = stored.find(
+          (a: any) => a.aadhaarNumber && a.aadhaarNumber.replace(/[\s-]/g, '') === cleanA
+        );
+        if (duplicate) {
+          setStep2Error('An application with this Aadhaar number has already been registered in our system.');
+          return;
+        }
+      } catch {
+        // ignore
+      }
+
+      setStep2Error('');
+      setStep(3);
     } else {
       const selectedTrack = itplPrograms.find((t) => t.id === trackId) || itplPrograms[0];
       const trackingCode = `INF-2026-${Math.floor(10000 + Math.random() * 90000)}`;
+      const cleanAadhaar = aadhaarNumber.replace(/[\s-]/g, '');
+      const masked = maskAadhaar(cleanAadhaar);
 
       const newApp = {
         id: `app_${Date.now()}`,
@@ -66,6 +161,11 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
         fullName: fullName || 'Candidate',
         email: email || 'candidate@example.com',
         phone: phone || '9146835824',
+        aadhaarNumber: aadhaarNumber.trim(),
+        aadhaarMasked: masked,
+        aadhaarVerified: true,
+        aadhaarDocFileName: aadhaarDocFileName || undefined,
+        aadhaarDocDataUrl: aadhaarDocDataUrl || undefined,
         trackId: trackId,
         trackTitle: selectedTrack.title,
         education: education,
@@ -102,10 +202,20 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
           candidateName: newApp.fullName,
           candidateEmail: newApp.email,
           candidatePhone: newApp.phone,
+          aadhaarNumber: newApp.aadhaarNumber,
+          aadhaarMasked: newApp.aadhaarMasked,
+          aadhaarVerified: true,
+          aadhaarDocFileName: newApp.aadhaarDocFileName,
+          aadhaarDocDataUrl: newApp.aadhaarDocDataUrl,
           department: 'Technology',
           stage: 'submitted',
           appliedDate: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-          notes: [`Tracking ID: ${newApp.trackingNumber}`, `Education: ${newApp.education} (${newApp.collegeName})`, `City: ${newApp.city}`],
+          notes: [
+            `Tracking ID: ${newApp.trackingNumber}`,
+            `Govt. Aadhaar: ${newApp.aadhaarMasked} (Verified)`,
+            `Education: ${newApp.education} (${newApp.collegeName})`,
+            `City: ${newApp.city}`,
+          ],
         });
         createApplicationFirestore(adminApp);
 
@@ -117,7 +227,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
           phone: newApp.phone,
           service: `Internship Track: ${newApp.trackTitle}`,
           company: newApp.collegeName || newApp.city,
-          message: `Tracking ID: ${newApp.trackingNumber} | Education: ${newApp.education} (${newApp.graduationYear}) | College: ${newApp.collegeName} | City: ${newApp.city} | Mode: ${newApp.mode} | Statement: ${newApp.whyJoin}`,
+          message: `Tracking ID: ${newApp.trackingNumber} | Aadhaar: ${newApp.aadhaarMasked} (Verified) | Education: ${newApp.education} (${newApp.graduationYear}) | College: ${newApp.collegeName} | City: ${newApp.city} | Mode: ${newApp.mode} | Statement: ${newApp.whyJoin}`,
           source: 'Candidate Internship Application Form',
           status: 'New',
         });
@@ -268,6 +378,13 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
           {/* STEP 2: Personal & Academic Details */}
           {step === 2 && (
             <form onSubmit={handleNextOrSubmit} className="space-y-4">
+              {step2Error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-semibold flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+                  <span>{step2Error}</span>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
@@ -313,11 +430,41 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
                       type="tel"
                       required
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="9876543210"
+                      onChange={(e) => handlePhoneChange(e.target.value)}
+                      placeholder="9876543210 (10-digit mobile)"
+                      maxLength={14}
                       className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#0059bb]"
                     />
                   </div>
+                  {phoneFeedback.message && (
+                    <p className={`text-[11px] mt-1 font-medium ${phoneFeedback.isValid ? 'text-emerald-600' : phoneFeedback.isValid === false ? 'text-red-500' : 'text-slate-500'}`}>
+                      {phoneFeedback.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5 flex items-center justify-between">
+                    <span>Aadhaar Number (UIDAI) *</span>
+                    <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Anti-Fraud KYC</span>
+                  </label>
+                  <div className="relative">
+                    <ShieldCheck className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      required
+                      value={aadhaarNumber}
+                      onChange={(e) => handleAadhaarChange(e.target.value)}
+                      placeholder="XXXX XXXX XXXX"
+                      maxLength={14}
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-mono tracking-wider focus:outline-none focus:border-[#0059bb]"
+                    />
+                  </div>
+                  {aadhaarFeedback.message && (
+                    <p className={`text-[11px] mt-1 font-medium ${aadhaarFeedback.isValid ? 'text-emerald-600 font-bold' : aadhaarFeedback.isValid === false ? 'text-red-500' : 'text-slate-500'}`}>
+                      {aadhaarFeedback.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -473,6 +620,26 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
                 </div>
 
                 <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Aadhaar Card Copy / ID Proof (Optional)</span>
+                    <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">KYC Verified</span>
+                  </label>
+                  <div className="border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center hover:border-[#0059bb] transition-colors relative cursor-pointer bg-slate-50/60">
+                    <input
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      onChange={handleAadhaarUpload}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                    />
+                    <ShieldCheck className="w-6 h-6 text-emerald-600 mx-auto mb-1.5" />
+                    <p className="text-xs font-semibold text-slate-700">
+                      {aadhaarDocFileName ? aadhaarDocFileName : 'Upload scanned copy of Aadhaar Card (PDF / JPG / PNG)'}
+                    </p>
+                    <span className="text-[11px] text-slate-400">Optional UIDAI KYC identification proof</span>
+                  </div>
+                </div>
+
+                <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
                     Why do you want to intern at Infoyashonand?
                   </label>
@@ -524,23 +691,39 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
                 </p>
               </div>
 
-              {/* Tracking ID Badge */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 max-w-sm mx-auto flex items-center justify-between">
-                <div className="text-left">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
-                    Your Tracking Number:
-                  </span>
-                  <span className="font-mono text-base font-extrabold text-[#00113a]">
-                    {submittedData.trackingNumber}
-                  </span>
+              {/* Tracking ID Badge & Aadhaar Verification Badge */}
+              <div className="space-y-2 max-w-sm mx-auto">
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between">
+                  <div className="text-left">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                      Your Tracking Number:
+                    </span>
+                    <span className="font-mono text-base font-extrabold text-[#00113a]">
+                      {submittedData.trackingNumber}
+                    </span>
+                  </div>
+                  <button
+                    onClick={copyTracking}
+                    className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:border-slate-300 text-xs font-bold text-slate-700 flex items-center gap-1 shadow-xs cursor-pointer"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>{copied ? 'Copied!' : 'Copy'}</span>
+                  </button>
                 </div>
-                <button
-                  onClick={copyTracking}
-                  className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:border-slate-300 text-xs font-bold text-slate-700 flex items-center gap-1 shadow-xs cursor-pointer"
-                >
-                  <Copy className="w-3.5 h-3.5" />
-                  <span>{copied ? 'Copied!' : 'Copy'}</span>
-                </button>
+
+                {submittedData.aadhaarMasked && (
+                  <div className="bg-emerald-50/80 p-3 rounded-xl border border-emerald-200 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      <span className="text-slate-700 font-medium">
+                        Aadhaar ID: <strong className="font-mono text-slate-900">{submittedData.aadhaarMasked}</strong>
+                      </span>
+                    </div>
+                    <span className="text-emerald-700 font-bold bg-white px-2 py-0.5 rounded-full border border-emerald-200 text-[11px]">
+                      UIDAI Verified
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="text-xs text-slate-500 max-w-md mx-auto bg-blue-50/60 p-3 rounded-xl border border-blue-100 text-left">

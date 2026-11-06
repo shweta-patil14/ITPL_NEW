@@ -11,6 +11,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectServiceInqui
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const search = searchParams.get('search') || '';
+  const categoryParam = searchParams.get('category') || '';
 
   const handleServiceInquiry = (serviceTitle: string) => {
     onSelectServiceInquiry(serviceTitle);
@@ -27,18 +28,27 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectServiceInqui
         breadcrumbCurrent="Services"
       />
 
-      {search && (
+      {(search || (categoryParam && categoryParam !== 'all')) && (
         <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-8">
           <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-between text-xs sm:text-sm">
             <div>
-              <span className="font-bold text-[#232884]">Search Results for: </span>
-              <span className="text-slate-800 font-semibold italic">&ldquo;{search}&rdquo;</span>
+              {search && (
+                <>
+                  <span className="font-bold text-[#232884]">Search Results for: </span>
+                  <span className="text-slate-800 font-semibold italic">&ldquo;{search}&rdquo;</span>
+                </>
+              )}
+              {categoryParam && categoryParam !== 'all' && (
+                <span className="ml-2 font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-200 uppercase text-xs">
+                  Category: {categoryParam}
+                </span>
+              )}
             </div>
             <button
               onClick={() => navigate('/services')}
               className="font-bold text-[#232884] hover:underline cursor-pointer"
             >
-              Clear Search
+              Show All Services
             </button>
           </div>
         </div>
@@ -48,6 +58,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectServiceInqui
       <ServicesSection
         onSelectServiceInquiry={handleServiceInquiry}
         searchQuery={search}
+        initialCategory={categoryParam || 'all'}
       />
 
       {/* Why Choose Our IT Services */}

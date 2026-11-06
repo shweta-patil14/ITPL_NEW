@@ -3,6 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from './Modal';
 import { signUpCandidate, signInCandidate } from '../firebase/authService';
 import { saveCandidateProfileFirestore } from '../firebase/firestoreService';
+import {
+  validateAadhaar,
+  formatAadhaar,
+  maskAadhaar,
+  validateIndianMobile,
+} from '../utils/aadhaarValidator';
 
 interface ApplyModalProps {
   isOpen: boolean;
@@ -14,6 +20,11 @@ interface UserProfile {
   name: string;
   email: string;
   phone: string;
+  aadhaarNumber?: string;
+  aadhaarMasked?: string;
+  aadhaarVerified?: boolean;
+  aadhaarDocFileName?: string;
+  aadhaarDocDataUrl?: string;
 }
 
 interface RegisteredUser {
@@ -21,6 +32,11 @@ interface RegisteredUser {
   email: string;
   phone: string;
   password: string;
+  aadhaarNumber?: string;
+  aadhaarMasked?: string;
+  aadhaarVerified?: boolean;
+  aadhaarDocFileName?: string;
+  aadhaarDocDataUrl?: string;
 }
 
 const getRegisteredUsers = (): RegisteredUser[] => {
@@ -82,6 +98,62 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
   const [regEmail, setRegEmail] = useState('');
   const [regPhone, setRegPhone] = useState('');
   const [regPassword, setRegPassword] = useState('');
+  const [regAadhaar, setRegAadhaar] = useState('');
+  const [aadhaarDocFileName, setAadhaarDocFileName] = useState('');
+  const [aadhaarDocDataUrl, setAadhaarDocDataUrl] = useState('');
+  const [aadhaarFeedback, setAadhaarFeedback] = useState<{ isValid?: boolean; message?: string }>({});
+  const [phoneFeedback, setPhoneFeedback] = useState<{ isValid?: boolean; message?: string }>({});
+
+  const handleAadhaarChange = (val: string) => {
+    const formatted = formatAadhaar(val);
+    setRegAadhaar(formatted);
+    const digits = formatted.replace(/\D/g, '');
+    if (digits.length === 12) {
+      const res = validateAadhaar(formatted);
+      if (res.isValid) {
+        setAadhaarFeedback({ isValid: true, message: '✓ Valid Aadhaar (UIDAI Verhoeff Checksum Verified)' });
+      } else {
+        setAadhaarFeedback({ isValid: false, message: res.error });
+      }
+    } else if (digits.length > 0) {
+      setAadhaarFeedback({ isValid: undefined, message: `${digits.length}/12 digits entered` });
+    } else {
+      setAadhaarFeedback({});
+    }
+  };
+
+  const handlePhoneChange = (val: string) => {
+    setRegPhone(val);
+    const digits = val.replace(/\D/g, '');
+    if (digits.length >= 10) {
+      const res = validateIndianMobile(val);
+      if (res.isValid) {
+        setPhoneFeedback({ isValid: true, message: '✓ Valid 10-Digit Mobile' });
+      } else {
+        setPhoneFeedback({ isValid: false, message: res.error });
+      }
+    } else if (digits.length > 0) {
+      setPhoneFeedback({ isValid: undefined, message: `${digits.length}/10 digits` });
+    } else {
+      setPhoneFeedback({});
+    }
+  };
+
+  const handleAadhaarFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setLoginError('Aadhaar document size should be less than 5 MB.');
+        return;
+      }
+      setAadhaarDocFileName(file.name);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setAadhaarDocDataUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // Successful login/register handler -> immediately opens Candidate Dashboard
   const proceedToDashboard = (user: UserProfile) => {
@@ -163,8 +235,22 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
     e.preventDefault();
     setLoginError('');
 
-    if (!regName.trim() || !regEmail.trim() || !regPhone.trim() || !regPassword.trim()) {
-      setLoginError('Please fill in all registration fields.');
+    if (!regName.trim() || !regEmail.trim() || !regPhone.trim() || !regPassword.trim() || !regAadhaar.trim()) {
+      setLoginError('Please fill in all registration fields, including your 12-digit Aadhaar number.');
+      return;
+    }
+
+    // 1. Strict Indian Mobile Validation (Anti-Fake Number)
+    const mobileCheck = validateIndianMobile(regPhone);
+    if (!mobileCheck.isValid) {
+      setLoginError(mobileCheck.error || 'Please enter a valid 10-digit Indian mobile number.');
+      return;
+    }
+
+    // 2. Strict Aadhaar UIDAI Verhoeff Checksum Validation (Anti-Fake Aadhaar)
+    const aadhaarCheck = validateAadhaar(regAadhaar);
+    if (!aadhaarCheck.isValid) {
+      setLoginError(aadhaarCheck.error || 'Please enter a valid 12-digit Government Aadhaar number.');
       return;
     }
 
@@ -173,28 +259,41 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
       return;
     }
 
-    // Check for duplicate email or phone
+    // Check for duplicate email, phone, or Aadhaar
     const users = getRegisteredUsers();
-    const emailExists = users.find(
-      (u) => u.email.toLowerCase() === regEmail.trim().toLowerCase()
-    );
+    const cleanEmail = regEmail.trim().toLowerCase();
+    const cleanPhone = mobileCheck.cleanPhone || regPhone.trim();
+    const cleanAadhaar = regAadhaar.replace(/[\s-]/g, '');
+
+    const emailExists = users.find((u) => u.email.toLowerCase() === cleanEmail);
     if (emailExists) {
       setLoginError('An account with this email already exists. Please log in.');
       return;
     }
-    const phoneExists = users.find((u) => u.phone === regPhone.trim());
+
+    const phoneExists = users.find((u) => u.phone.replace(/\D/g, '').endsWith(cleanPhone));
     if (phoneExists) {
       setLoginError('An account with this phone number already exists. Please log in.');
       return;
     }
 
+    const aadhaarExists = users.find(
+      (u) => u.aadhaarNumber && u.aadhaarNumber.replace(/[\s-]/g, '') === cleanAadhaar
+    );
+    if (aadhaarExists) {
+      setLoginError('A candidate account is already registered with this Aadhaar number. Duplicate registrations are prohibited.');
+      return;
+    }
+
+    const masked = maskAadhaar(cleanAadhaar);
+
     // Attempt registration in Firebase Auth
     try {
       await signUpCandidate(
-        regEmail.trim().toLowerCase(),
+        cleanEmail,
         regPassword,
         regName.trim(),
-        regPhone.trim()
+        cleanPhone
       );
     } catch {
       // Non-blocking fallback
@@ -204,23 +303,33 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
     saveCandidateProfileFirestore({
       candidateId: `cand-${Date.now()}`,
       name: regName.trim(),
-      email: regEmail.trim().toLowerCase(),
-      phone: regPhone.trim(),
-    });
-
-    // Save credentials to registered users store
-    saveRegisteredUser({
-      name: regName.trim(),
-      email: regEmail.trim().toLowerCase(),
-      phone: regPhone.trim(),
-      password: regPassword,
+      email: cleanEmail,
+      phone: cleanPhone,
     });
 
     const newUser: UserProfile = {
       name: regName.trim(),
-      email: regEmail.trim(),
-      phone: regPhone.trim(),
+      email: cleanEmail,
+      phone: cleanPhone,
+      aadhaarNumber: regAadhaar.trim(),
+      aadhaarMasked: masked,
+      aadhaarVerified: true,
+      aadhaarDocFileName: aadhaarDocFileName || undefined,
+      aadhaarDocDataUrl: aadhaarDocDataUrl || undefined,
     };
+
+    // Save credentials to registered users store
+    saveRegisteredUser({
+      name: regName.trim(),
+      email: cleanEmail,
+      phone: cleanPhone,
+      password: regPassword,
+      aadhaarNumber: regAadhaar.trim(),
+      aadhaarMasked: masked,
+      aadhaarVerified: true,
+      aadhaarDocFileName: aadhaarDocFileName || undefined,
+      aadhaarDocDataUrl: aadhaarDocDataUrl || undefined,
+    });
 
     proceedToDashboard(newUser);
   };
@@ -255,9 +364,15 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
             </div>
             <h3 className="font-extrabold text-[#111A3A] text-lg">Welcome back, {currentUser.name}!</h3>
             <p className="text-xs text-slate-600 mt-0.5">{currentUser.email}</p>
-            <p className="text-xs text-emerald-800 font-semibold mt-2.5 bg-emerald-100/70 inline-block px-3 py-1 rounded-full border border-emerald-300/60">
-              ✓ Authenticated Candidate Account
-            </p>
+            {currentUser.phone && (
+              <p className="text-xs text-slate-500 font-mono mt-0.5">+91 {currentUser.phone}</p>
+            )}
+            <div className="mt-2.5 flex items-center justify-center gap-2 flex-wrap">
+              <span className="text-xs text-emerald-800 font-semibold bg-emerald-100/70 inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-emerald-300/60">
+                <span className="material-symbols-outlined text-xs">verified_user</span>
+                <span>{currentUser.aadhaarMasked ? `Govt. Aadhaar: ${currentUser.aadhaarMasked} (Verified)` : 'Authenticated Account'}</span>
+              </span>
+            </div>
           </div>
 
           <p className="text-xs text-slate-600 text-center">
@@ -414,31 +529,133 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
                 </div>
               )}
 
-              <form onSubmit={handleRegisterSubmit} className="space-y-3">
+              <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Full Name *</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Full Legal Name (as per Aadhaar Card) *
+                  </label>
                   <input
                     required
                     type="text"
                     value={regName}
                     onChange={(e) => setRegName(e.target.value)}
-                    placeholder="e.g. Rahul Sharma"
+                    placeholder="e.g. Rahul Ramesh Sharma"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-[#131B2E] focus:outline-none focus:border-[#232884] focus:bg-white"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Mobile Phone *</label>
+                {/* Government Aadhaar Identification Section */}
+                <div className="p-3.5 rounded-2xl bg-gradient-to-br from-indigo-50/80 via-blue-50/50 to-slate-50 border border-indigo-200/90 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-[#111A3A] flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-base text-[#232884]">verified_user</span>
+                      <span>12-Digit Aadhaar Identification Number *</span>
+                    </label>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-100/80 text-[#232884]">
+                      UIDAI Anti-Fraud
+                    </span>
+                  </div>
+
+                  <div className="relative">
                     <input
                       required
-                      type="tel"
-                      value={regPhone}
-                      onChange={(e) => setRegPhone(e.target.value)}
-                      placeholder="+91 80555 14368"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-[#131B2E] focus:outline-none focus:border-[#232884] focus:bg-white"
+                      type="text"
+                      maxLength={14}
+                      value={regAadhaar}
+                      onChange={(e) => handleAadhaarChange(e.target.value)}
+                      placeholder="e.g. 3675 9834 6016"
+                      className={`w-full px-3.5 py-2.5 rounded-xl bg-white border text-xs sm:text-sm font-mono tracking-widest text-[#131B2E] focus:outline-none transition-all shadow-xs ${
+                        aadhaarFeedback.isValid === true
+                          ? 'border-emerald-500 focus:border-emerald-600 ring-2 ring-emerald-100'
+                          : aadhaarFeedback.isValid === false
+                          ? 'border-rose-400 focus:border-rose-500 ring-2 ring-rose-100'
+                          : 'border-slate-300 focus:border-[#232884]'
+                      }`}
                     />
+                    {aadhaarFeedback.isValid === true && (
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600 material-symbols-outlined text-lg">
+                        check_circle
+                      </span>
+                    )}
                   </div>
+
+                  {aadhaarFeedback.message && (
+                    <p
+                      className={`text-[11px] font-semibold flex items-center gap-1 ${
+                        aadhaarFeedback.isValid === true
+                          ? 'text-emerald-700'
+                          : aadhaarFeedback.isValid === false
+                          ? 'text-rose-600'
+                          : 'text-slate-500'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-xs">
+                        {aadhaarFeedback.isValid === true ? 'verified' : aadhaarFeedback.isValid === false ? 'cancel' : 'info'}
+                      </span>
+                      <span>{aadhaarFeedback.message}</span>
+                    </p>
+                  )}
+
+                  {/* Optional Aadhaar Photo / PDF Upload */}
+                  <div className="pt-2 border-t border-indigo-100/80">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-semibold text-slate-700">Attach Aadhaar Proof (Card / E-Aadhaar):</span>
+                      <label className="text-[11px] font-bold text-[#232884] bg-white border border-indigo-200 hover:bg-indigo-50/80 px-2.5 py-1 rounded-lg cursor-pointer transition-all shadow-2xs">
+                        <span>{aadhaarDocFileName ? 'Change File' : '+ Upload Document'}</span>
+                        <input
+                          type="file"
+                          accept=".pdf,.png,.jpg,.jpeg"
+                          onChange={handleAadhaarFile}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                    {aadhaarDocFileName && (
+                      <div className="mt-1.5 flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-lg">
+                        <span className="material-symbols-outlined text-xs">description</span>
+                        <span className="truncate">{aadhaarDocFileName}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      10-Digit Mobile Number *
+                    </label>
+                    <div className="relative">
+                      <input
+                        required
+                        type="tel"
+                        maxLength={13}
+                        value={regPhone}
+                        onChange={(e) => handlePhoneChange(e.target.value)}
+                        placeholder="e.g. 9146835824"
+                        className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border text-xs sm:text-sm text-[#131B2E] focus:outline-none focus:bg-white transition-all ${
+                          phoneFeedback.isValid === true
+                            ? 'border-emerald-500 focus:border-emerald-600'
+                            : phoneFeedback.isValid === false
+                            ? 'border-rose-400 focus:border-rose-500'
+                            : 'border-slate-200 focus:border-[#232884]'
+                        }`}
+                      />
+                    </div>
+                    {phoneFeedback.message && (
+                      <p
+                        className={`text-[10px] font-semibold mt-1 flex items-center gap-1 ${
+                          phoneFeedback.isValid === true
+                            ? 'text-emerald-700'
+                            : phoneFeedback.isValid === false
+                            ? 'text-rose-600'
+                            : 'text-slate-500'
+                        }`}
+                      >
+                        <span>{phoneFeedback.message}</span>
+                      </p>
+                    )}
+                  </div>
+
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">Email Address *</label>
                     <input
@@ -468,7 +685,8 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
                   type="submit"
                   className="w-full py-3 rounded-xl bg-gradient-to-r from-[#232884] via-[#1b2685] to-[#232884] hover:from-[#1b2685] hover:to-[#141d66] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 mt-2"
                 >
-                  <span>Register &amp; Open Dashboard</span>
+                  <span className="material-symbols-outlined text-sm font-bold">verified_user</span>
+                  <span>Verify Identity &amp; Register</span>
                   <span className="material-symbols-outlined text-sm font-bold">arrow_forward</span>
                 </button>
               </form>

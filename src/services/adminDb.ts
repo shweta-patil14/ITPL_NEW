@@ -77,6 +77,12 @@ export interface ApplicationItem {
   lastTestAttemptDate?: string;
   appliedDate?: string;
   notes?: string[];
+  // Aadhaar Government Identification & Anti-Fraud Verification
+  aadhaarNumber?: string;
+  aadhaarMasked?: string;
+  aadhaarVerified?: boolean;
+  aadhaarDocFileName?: string;
+  aadhaarDocDataUrl?: string;
   // Interview scoring & offer letter eligibility
   technicalInterview?: TechnicalInterviewScore;
   hrInterview?: HrInterviewScore;
@@ -1284,6 +1290,11 @@ class AdminDatabase {
       testStatus: app.testStatus || 'Passed',
       appliedDate: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
       notes: app.notes || ['Applied via candidate portal'],
+      aadhaarNumber: app.aadhaarNumber,
+      aadhaarMasked: app.aadhaarMasked,
+      aadhaarVerified: app.aadhaarVerified ?? Boolean(app.aadhaarNumber),
+      aadhaarDocFileName: app.aadhaarDocFileName,
+      aadhaarDocDataUrl: app.aadhaarDocDataUrl,
     };
     apps.unshift(newApp);
     localStorage.setItem('itpl_admin_applications', JSON.stringify(apps));

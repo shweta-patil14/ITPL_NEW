@@ -241,7 +241,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQuoteModal, onOpenApplyMod
             <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-[#1b2685]">
               <div className="flex items-center gap-2">
                 <div className="h-9 w-auto flex items-center justify-center">
-                  <img src="/company-logo-clean.png" alt="Logo" className="h-full w-auto object-contain" />
+                  <img src="/company-logo-clean.png" alt="Infoyashonand Technology Logo" className="h-full w-auto object-contain" />
                 </div>
                 <span className="font-bold text-sm tracking-wider uppercase text-amber-300">
                   Infoyashonand

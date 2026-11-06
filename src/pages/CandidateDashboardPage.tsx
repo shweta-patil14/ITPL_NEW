@@ -11,6 +11,9 @@ interface CandidateProfile {
   candidateId: string;
   appliedRole: string;
   appliedDate: string;
+  aadhaarNumber?: string;
+  aadhaarMasked?: string;
+  aadhaarVerified?: boolean;
 }
 
 interface AptitudeQuestion {
@@ -63,8 +66,8 @@ const DEFAULT_DOCUMENTS: CandidateDoc[] = [
   },
   {
     id: 'doc-idproof',
-    title: 'Government Photo ID Proof',
-    category: 'Identity Proof',
+    title: 'Aadhaar Card / UIDAI Photo ID Proof',
+    category: 'Identity Proof (KYC)',
     required: true,
     status: 'pending',
   },
@@ -314,6 +317,18 @@ export const CandidateDashboardPage: React.FC = () => {
   const [profile, setProfile] = useState<CandidateProfile>(() => {
     try {
       const saved = localStorage.getItem('itpl_candidate_user');
+      let registeredAadhaar = '';
+      let registeredMasked = '';
+      try {
+        const apps = JSON.parse(localStorage.getItem('infoyashonand_applications') || '[]');
+        if (apps && apps.length > 0) {
+          registeredAadhaar = apps[0].aadhaarNumber || '';
+          registeredMasked = apps[0].aadhaarMasked || '';
+        }
+      } catch {
+        // ignore
+      }
+
       if (saved) {
         const u = JSON.parse(saved);
         if (u.name && u.name !== 'Amit Patil' && u.name !== 'Akshad') {
@@ -324,6 +339,9 @@ export const CandidateDashboardPage: React.FC = () => {
             candidateId: `ITPL-${Math.floor(1000 + Math.random() * 9000)}`,
             appliedRole: 'Full Stack Web Development & Placement',
             appliedDate: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+            aadhaarNumber: u.aadhaarNumber || registeredAadhaar || undefined,
+            aadhaarMasked: u.aadhaarMasked || registeredMasked || (u.aadhaarNumber ? `XXXX XXXX ${u.aadhaarNumber.slice(-4)}` : undefined),
+            aadhaarVerified: u.aadhaarVerified ?? (!!u.aadhaarNumber || !!registeredAadhaar),
           };
         }
       }
@@ -354,6 +372,14 @@ export const CandidateDashboardPage: React.FC = () => {
       );
       if (match) {
         setCandidateStage(match.stage);
+        if (match.aadhaarMasked && !profile.aadhaarMasked) {
+          setProfile((prev) => ({
+            ...prev,
+            aadhaarMasked: match.aadhaarMasked,
+            aadhaarNumber: match.aadhaarNumber,
+            aadhaarVerified: match.aadhaarVerified ?? true,
+          }));
+        }
       }
       const offs = adminDb.getOffers();
       const offMatch = offs.find(
@@ -367,7 +393,7 @@ export const CandidateDashboardPage: React.FC = () => {
     } catch {
       // ignore
     }
-  }, [profile]);
+  }, [profile.email, profile.name]);
 
   // Clean Documents state (no pre-filled dummy documents)
   const [documents, setDocuments] = useState<CandidateDoc[]>(() => {
@@ -1204,6 +1230,17 @@ export const CandidateDashboardPage: React.FC = () => {
                     <span className="flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-sm text-amber-400">call</span>
                       {profile.phone}
+                    </span>
+                  )}
+                  {profile.aadhaarMasked ? (
+                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">
+                      <span className="material-symbols-outlined text-xs text-emerald-400">verified_user</span>
+                      Aadhaar: {profile.aadhaarMasked} (Verified)
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-400/40">
+                      <span className="material-symbols-outlined text-xs text-amber-400">shield</span>
+                      Aadhaar KYC Required
                     </span>
                   )}
                 </div>

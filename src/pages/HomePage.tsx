@@ -52,8 +52,8 @@ export const HomePage: React.FC<HomePageProps> = ({
         className="relative w-full py-12 sm:py-16 lg:py-24 bg-[#F8FAFF] border-b border-indigo-100/80 overflow-hidden"
         id="services"
       >
-        {/* Ambient glowing background blur elements */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[380px] bg-gradient-to-tr from-indigo-200/25 via-purple-150/15 to-sky-200/20 blur-[120px] pointer-events-none rounded-full" />
+        {/* Ambient glowing background radial gradient (hardware accelerated, zero blur overhead) */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[380px] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.15)_0%,rgba(168,85,247,0.08)_40%,transparent_70%)] pointer-events-none rounded-full" />
         <div className="absolute inset-0 hero-dot-grid opacity-30 pointer-events-none" />
 
         {/* Decorative corner stitch markers */}
@@ -65,11 +65,11 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
           <div
             className={`flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-14 gap-6 transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              isServicesVisible ? 'opacity-100 translate-y-0 filter-none' : 'opacity-0 translate-y-6 filter blur-xs'
+              isServicesVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
             }`}
           >
             <div>
-              <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white border border-indigo-200/90 text-[11px] sm:text-xs font-extrabold text-[#232884] shadow-xs backdrop-blur-md mb-3 pill-bounce cursor-default max-w-full flex-wrap sm:flex-nowrap">
+              <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white border border-indigo-200/90 text-[11px] sm:text-xs font-extrabold text-[#232884] shadow-xs mb-3 pill-bounce cursor-default max-w-full flex-wrap sm:flex-nowrap">
                 <span className="relative flex h-2 w-2 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3D48C8] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#232884]"></span>
@@ -174,8 +174,8 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* 5. Successfully Completed Projects Showcase (Featured Portfolio) */}
       <section className="relative w-full py-16 lg:py-24 bg-gradient-to-br from-[#EEF2FF] via-[#E0E7FF] to-[#EEF2FF] border-b border-indigo-200/90 overflow-hidden" id="portfolio-featured">
-        {/* Subtle glowing ambient background orb */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[400px] bg-gradient-to-tr from-indigo-300/35 via-purple-200/30 to-sky-300/30 blur-[110px] pointer-events-none rounded-full" />
+        {/* Subtle glowing ambient background radial gradient (hardware accelerated, zero blur overhead) */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.2)_0%,rgba(168,85,247,0.12)_40%,transparent_70%)] pointer-events-none rounded-full" />
         <div className="absolute inset-0 hero-dot-grid opacity-40 pointer-events-none" />
 
         {/* Decorative corner stitch markers */}
@@ -185,7 +185,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
           <div className="reveal-up flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-14 gap-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white border border-indigo-200/90 text-[11px] sm:text-xs font-extrabold text-[#232884] shadow-xs backdrop-blur-md mb-3 pill-bounce cursor-default max-w-full flex-wrap sm:flex-nowrap">
+              <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white border border-indigo-200/90 text-[11px] sm:text-xs font-extrabold text-[#232884] shadow-xs mb-3 pill-bounce cursor-default max-w-full flex-wrap sm:flex-nowrap">
                 <span className="relative flex h-2 w-2 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3D48C8] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#232884]"></span>

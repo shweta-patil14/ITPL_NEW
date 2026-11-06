@@ -11,23 +11,19 @@ export const ScrollAnimationManager: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Check for prefers-reduced-motion
     if (typeof window === 'undefined') return;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Select all animatable targets
+    let activeObserver: IntersectionObserver | null = null;
+    let safetyTimer: ReturnType<typeof setTimeout> | null = null;
+
     const setupObserver = () => {
       const selector = '.scroll-reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-zoom, .itpl-card, .stitch-card, .bounce-card, .glass-card, [data-reveal]';
       const targets = document.querySelectorAll<HTMLElement>(selector);
 
-      if (prefersReducedMotion) {
+      if (prefersReducedMotion || !('IntersectionObserver' in window)) {
         targets.forEach((el) => el.classList.add('is-revealed'));
-        return;
-      }
-
-      if (!('IntersectionObserver' in window)) {
-        targets.forEach((el) => el.classList.add('is-revealed'));
-        return;
+        return null;
       }
 
       const observer = new IntersectionObserver(
@@ -36,15 +32,14 @@ export const ScrollAnimationManager: React.FC = () => {
             if (entry.isIntersecting) {
               const el = entry.target as HTMLElement;
               el.classList.add('is-revealed');
-              // Unobserve once revealed to keep performance 60fps
               observer.unobserve(el);
             }
           });
         },
         {
           root: null,
-          threshold: 0.08,
-          rootMargin: '0px 0px -30px 0px',
+          threshold: 0.05,
+          rootMargin: '50px 0px 50px 0px',
         }
       );
 
@@ -55,23 +50,21 @@ export const ScrollAnimationManager: React.FC = () => {
       return observer;
     };
 
-    // Slight delay to allow DOM render after route transition
     const timer = setTimeout(() => {
-      const observer = setupObserver();
+      activeObserver = setupObserver();
 
-      // Safety timeout: ensure everything becomes visible after 1s so no content is ever stuck hidden
-      const safetyTimer = setTimeout(() => {
+      // Safety timeout: ensure everything becomes visible after 800ms
+      safetyTimer = setTimeout(() => {
         const unrevealed = document.querySelectorAll<HTMLElement>('.scroll-reveal:not(.is-revealed), .reveal-up:not(.is-revealed)');
         unrevealed.forEach((el) => el.classList.add('is-revealed'));
-      }, 1000);
+      }, 800);
+    }, 40);
 
-      return () => {
-        if (observer) observer.disconnect();
-        clearTimeout(safetyTimer);
-      };
-    }, 60);
-
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (safetyTimer) clearTimeout(safetyTimer);
+      if (activeObserver) activeObserver.disconnect();
+    };
   }, [location.pathname]);
 
   return null;

@@ -5,13 +5,21 @@ import { ServiceItem } from '../types';
 interface ServicesSectionProps {
   onSelectServiceInquiry: (serviceTitle: string) => void;
   searchQuery?: string;
+  initialCategory?: string;
 }
 
 export const ServicesSection: React.FC<ServicesSectionProps> = ({
   onSelectServiceInquiry,
   searchQuery,
+  initialCategory,
 }) => {
-  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [filterCategory, setFilterCategory] = useState<string>(initialCategory || 'all');
+
+  useEffect(() => {
+    if (initialCategory) {
+      setFilterCategory(initialCategory);
+    }
+  }, [initialCategory]);
   const [isFeaturedVisible, setIsFeaturedVisible] = useState(false);
   const featuredSectionRef = useRef<HTMLDivElement>(null);
 
@@ -69,10 +77,10 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
           {/* Section Header with smooth entrance */}
           <div
             className={`text-center max-w-3xl mx-auto mb-10 sm:mb-14 transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              isFeaturedVisible ? 'opacity-100 translate-y-0 filter-none' : 'opacity-0 translate-y-6 filter blur-xs'
+              isFeaturedVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
             }`}
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-indigo-200/90 text-xs font-extrabold text-[#232884] shadow-xs backdrop-blur-md mb-3 pill-bounce cursor-default">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-indigo-200/90 text-xs font-extrabold text-[#232884] shadow-xs mb-3 pill-bounce cursor-default">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3D48C8] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#232884]"></span>

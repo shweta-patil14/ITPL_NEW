@@ -9,6 +9,7 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
 import { ScrollAnimationManager } from './components/ScrollAnimationManager';
+import { SEOHeadManager } from './components/SEOHeadManager';
 import { Modal } from './components/Modal';
 import { Toast } from './components/Toast';
 import { ProjectModal } from './components/ProjectModal';
@@ -136,6 +137,9 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-[#FAF8FF] overflow-x-clip w-full print:overflow-visible print:min-h-0 print:bg-white print:block print:w-full">
       {/* Scroll instantly to top on page navigation */}
       <ScrollToTop />
+
+      {/* Dynamic Route-Level SEO Title, Description & Canonical Manager */}
+      <SEOHeadManager />
 
       {/* Global Scroll Animation Observer */}
       <ScrollAnimationManager />
